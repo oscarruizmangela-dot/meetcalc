@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El coste de reunirse — Simulador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EEF0E2;
+    --paper-line: #CBD1B8;
+    --surface: #FBFAF3;
+    --ink: #22301F;
+    --ink-soft: #5B6555;
+    --accent-alarm: #A23E2A;
+    --accent-alarm-soft: #A23E2A22;
+    --accent-gold: #A9812E;
+    --accent-gold-soft: #A9812E1c;
+    --ok: #3D6B4A;
+    --radius: 4px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(180deg, transparent, transparent 27px, var(--paper-line) 28px),
+      var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    padding:0 0 80px 0;
+  }
+  a{color:inherit;}
+  button{font-family:'IBM Plex Sans', sans-serif;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    padding:52px 24px 34px;
+    max-width:1100px;
+    margin:0 auto;
+    border-bottom:2px solid var(--ink);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--accent-alarm);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent-alarm);
+    box-shadow:0 0 0 3px var(--accent-alarm-soft);
+  }
+  h1{
+    font-family:'IBM Plex Slab', serif;
+    font-weight:700;
+    font-size:clamp(34px, 5vw, 56px);
+    line-height:1.02;
+    margin:14px 0 12px;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    font-size:16px;
+    color:var(--ink-soft);
+    max-width:640px;
+    line-height:1.55;
+    margin:0;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{
+    max-width:1100px;
+    margin:0 auto;
+    padding:40px 24px 0;
+    display:grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width: 860px){
+    .wrap{grid-template-columns:1fr;}
+  }
+
+  /* ---------- LEDGER (form) ---------- */
+  .ledger{
+    background:var(--surface);
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:6px 0;
+  }
+  .ledger-section{
+    padding:22px 26px;
+    border-bottom:1px solid var(--paper-line);
+  }
+  .ledger-section:last-child{border-bottom:none;}
+  .section-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent-gold);
+    margin:0 0 6px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .section-label span.n{color:var(--ink-soft); text-transform:none; letter-spacing:0;}
+  .section-help{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0 0 16px;
+    line-height:1.5;
+  }
+
+  /* config row (horas/año, cargas sociales) */
+  .config-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:18px;
+    padding-bottom:18px;
+    border-bottom:1px dashed var(--paper-line);
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .field label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .unit-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .unit-wrap input[type=number]{flex:1;}
+  .unit-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    padding:8px 10px;
+    border-radius:3px;
+  }
+
+  input[type=number], input[type=text]{
+    width:100%;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    font-weight:600;
+    padding:8px 9px;
+    border:1px solid var(--paper-line);
+    border-radius:3px;
+    background:#fff;
+    color:var(--ink);
+  }
+  input[type=number]{text-align:right;}
+  input[type=text]{font-family:'IBM Plex Sans'; font-weight:500; text-align:left;}
+  select{
+    width:100%;
+    font-family:'IBM Plex Sans';
+    font-size:13.5px;
+    font-weight:500;
+    padding:8px 9px;
+    border:1px solid var(--paper-line);
+    border-radius:3px;
+    background:#fff;
+    color:var(--ink);
+  }
+  input:focus, select:focus{outline:2px solid var(--accent-gold); outline-offset:1px;}
+
+  /* perfil rows */
+  .perfil-row{
+    display:grid;
+    grid-template-columns: 1fr 110px 90px 26px;
+    gap:8px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .perfil-rate{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ok);
+    text-align:right;
+    white-space:nowrap;
+  }
+  .row-del{
+    width:26px; height:26px;
+    border:1px solid var(--paper-line);
+    background:#fff;
+    border-radius:3px;
+    color:var(--accent-alarm);
+    cursor:pointer;
+    font-size:14px;
+    line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .row-del:hover{background:var(--accent-alarm-soft);}
+  .col-headers{
+    display:grid;
+    grid-template-columns: 1fr 110px 90px 26px;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .col-headers span:nth-child(2), .col-headers span:nth-child(3){text-align:right;}
+
+  /* asistente rows */
+  .asistente-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr 90px 26px;
+    gap:8px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .asistente-row .custom-bruto{
+    grid-column: 1 / 3;
+    display:none;
+    gap:8px;
+    align-items:center;
+  }
+  .asistente-row .custom-bruto.show{display:flex;}
+  .asistente-row .custom-bruto input{flex:1;}
+  .asistente-row .custom-bruto span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .asis-col-headers{
+    display:grid;
+    grid-template-columns: 1fr 1fr 90px 26px;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .asis-col-headers span:nth-child(3){text-align:right;}
+
+  .add-btn{
+    width:100%;
+    margin-top:4px;
+    padding:9px;
+    border:1px dashed var(--paper-line);
+    background:transparent;
+    border-radius:3px;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+  }
+  .add-btn:hover{border-color:var(--accent-gold); color:var(--accent-gold);}
+
+  .field-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+
+  .toggle-group{
+    display:flex;
+    gap:8px;
+  }
+  .toggle-btn{
+    flex:1;
+    padding:11px 10px;
+    text-align:center;
+    border:1px solid var(--paper-line);
+    border-radius:3px;
+    background:#fff;
+    font-size:13.5px;
+    font-weight:500;
+    cursor:pointer;
+    color:var(--ink-soft);
+    transition:all .15s ease;
+  }
+  .toggle-btn.active{
+    border-color:var(--ink);
+    background:var(--ink);
+    color:var(--paper);
+  }
+
+  /* ---------- METER (sticky right panel) ---------- */
+  .meter-panel{
+    position:sticky;
+    top:24px;
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--ink);
+  }
+  .meter-head{
+    padding:20px 24px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .meter-head .lbl{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#C7CDB7;
+  }
+  .meter-head .status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--accent-gold);
+  }
+  .meter-display{
+    padding:14px 24px 6px;
+    text-align:left;
+  }
+  .meter-number{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:700;
+    font-size:clamp(40px, 6vw, 58px);
+    letter-spacing:-0.01em;
+    line-height:1;
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+  }
+  .meter-number .sym{font-size:0.5em; color:var(--accent-gold); font-weight:600;}
+  .meter-sub{
+    font-size:12.5px;
+    color:#C7CDB7;
+    margin-top:8px;
+  }
+  .meter-sub b{color:var(--paper); font-weight:600;}
+
+  .rule{
+    height:1px;
+    background:#3A4736;
+    margin:18px 24px 0;
+  }
+
+  .breakdown{
+    padding:18px 24px 4px;
+  }
+  .bd-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:13.5px;
+    padding:8px 0;
+    border-bottom:1px dashed #3A4736;
+  }
+  .bd-row.alarm{color:var(--accent-alarm);}
+  .bd-row .k{color:#C7CDB7;}
+  .bd-row .v{font-family:'IBM Plex Mono', monospace; font-weight:600; color:var(--paper);}
+  .bd-row.alarm .v{color:var(--accent-alarm);}
+
+  .meter-cta{
+    padding:20px 24px 24px;
+  }
+  .sim-btn{
+    width:100%;
+    padding:14px;
+    background:var(--accent-alarm);
+    color:#fff;
+    border:none;
+    border-radius:3px;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:filter .15s ease;
+  }
+  .sim-btn:hover{filter:brightness(1.08);}
+  .sim-btn:disabled{opacity:.55; cursor:default;}
+  .sim-note{
+    font-size:11.5px;
+    color:#8D9682;
+    margin-top:10px;
+    text-align:center;
+  }
+
+  footer{
+    max-width:1100px;
+    margin:40px auto 0;
+    padding:0 24px;
+    font-size:12px;
+    color:var(--ink-soft);
+    font-family:'IBM Plex Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Simulador · v0.2</div>
+  <h1>¿Cuánto cuesta<br>esta reunión?</h1>
+  <p>Define perfiles con su bruto/año, añade a los asistentes por nombre, indica duración y retraso. El contador de la derecha traduce todo eso en euros, en tiempo real.</p>
+</header>
+
+<div class="wrap">
+
+  <!-- LEDGER / FORM -->
+  <div class="ledger">
+
+    <!-- MANTENIMIENTO DE PERFILES -->
+    <div class="ledger-section">
+      <div class="section-label">Mantenimiento de perfiles</div>
+      <p class="section-help">El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y las horas laborables al año.</p>
+
+      <div class="config-row">
+        <div class="field">
+          <label>Horas laborables / año</label>
+          <div class="unit-wrap">
+            <input type="number" min="1" value="1750" id="horasAnuales">
+            <span class="unit-tag">h/año</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Cargas sociales (sobre bruto)</label>
+          <div class="unit-wrap">
+            <input type="number" min="0" value="32" id="cargasPct">
+            <span class="unit-tag">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-headers">
+        <span>Perfil</span>
+        <span>Bruto/año</span>
+        <span>€/h</span>
+        <span></span>
+      </div>
+      <div id="perfilesList"></div>
+      <button class="add-btn" id="addPerfil">+ Añadir perfil</button>
+    </div>
+
+    <!-- ASISTENTES -->
+    <div class="ledger-section">
+      <div class="section-label">Asistentes a la reunión <span class="n" id="totalAsistentes">0 personas</span></div>
+      <p class="section-help">Asigna un perfil a cada persona, o elige «Personalizado» para introducir su bruto/año directamente.</p>
+
+      <div class="asis-col-headers">
+        <span>Nombre</span>
+        <span>Perfil</span>
+        <span>€/h</span>
+        <span></span>
+      </div>
+      <div id="asistentesList"></div>
+      <button class="add-btn" id="addAsistente">+ Añadir asistente</button>
+    </div>
+
+    <!-- TIEMPO -->
+    <div class="ledger-section">
+      <div class="section-label">Tiempo</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Duración prevista</label>
+          <div class="unit-wrap">
+            <input type="number" min="0" value="45" id="duracion">
+            <span class="unit-tag">minutos</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Retraso al empezar</label>
+          <div class="unit-wrap">
+            <input type="number" min="0" value="8" id="retraso">
+            <span class="unit-tag">minutos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALIDAD -->
+    <div class="ledger-section">
+      <div class="section-label">Modalidad</div>
+      <div class="toggle-group">
+        <div class="toggle-btn active" id="btn-remota" data-mode="remota">Remota</div>
+        <div class="toggle-btn" id="btn-presencial" data-mode="presencial">Presencial</div>
+      </div>
+      <div class="field" style="margin-top:14px; display:none;" id="salaField">
+        <label>Coste de la sala / recursos</label>
+        <div class="unit-wrap">
+          <input type="number" min="0" value="15" id="costeSala">
+          <span class="unit-tag">€/h</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- METER -->
+  <div class="meter-panel">
+    <div class="meter-head">
+      <span class="lbl">Coste total estimado</span>
+      <span class="status" id="statusLabel">en reposo</span>
+    </div>
+    <div class="meter-display">
+      <div class="meter-number"><span class="sym">€</span><span id="meterValue">0,00</span></div>
+      <div class="meter-sub"><b id="costePorMinuto">0,00 €</b> por minuto de reunión</div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="breakdown" id="breakdownList">
+      <!-- filas generadas dinámicamente por perfil -->
+    </div>
+
+    <div class="meter-cta">
+      <button class="sim-btn" id="simBtn">▶ Simular en tiempo real</button>
+      <div class="sim-note" id="simNote">La animación comprime la reunión completa en unos segundos</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>v0.2 — coste/hora = bruto/año × (1 + cargas sociales) ÷ horas laborables/año. Coste total = Σ(coste/h de cada asistente) × (duración + retraso) + sala.</footer>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const fmt = n => n.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
+  let uidCounter = 0;
+  const uid = () => 'id' + (uidCounter++);
+
+  // ---------- ESTADO ----------
+  let perfiles = [
+    { id: uid(), nombre: 'Directivo', bruto: 65000 },
+    { id: uid(), nombre: 'Mando intermedio', bruto: 38000 },
+    { id: uid(), nombre: 'Personal base', bruto: 24000 },
+  ];
+
+  let asistentes = [
+    { id: uid(), nombre: 'Ana (dirección)', perfilId: perfiles[0].id, personalizado: false, brutoPropio: null },
+    { id: uid(), nombre: 'Marc',            perfilId: perfiles[1].id, personalizado: false, brutoPropio: null },
+    { id: uid(), nombre: 'Laia',            perfilId: perfiles[1].id, personalizado: false, brutoPropio: null },
+    { id: uid(), nombre: 'Jordi',           perfilId: perfiles[2].id, personalizado: false, brutoPropio: null },
+    { id: uid(), nombre: 'Núria',           perfilId: perfiles[2].id, personalizado: false, brutoPropio: null },
+  ];
+
+  let modo = 'remota';
+  let ultimoTotal = 0;
+
+  // ---------- CÁLCULO AUXILIAR ----------
+  function costeHoraDesdeBruto(bruto){
+    const horas = Math.max(1, +$('horasAnuales').value || 1750);
+    const cargas = Math.max(0, +$('cargasPct').value || 0) / 100;
+    return (bruto * (1 + cargas)) / horas;
+  }
+
+  function costeHoraAsistente(a){
+    if (a.personalizado){
+      return costeHoraDesdeBruto(a.brutoPropio || 0);
+    }
+    const perfil = perfiles.find(p => p.id === a.perfilId);
+    return perfil ? costeHoraDesdeBruto(perfil.bruto) : 0;
+  }
+
+  // ---------- RENDER: PERFILES ----------
+  function renderPerfiles(){
+    const cont = $('perfilesList');
+    cont.innerHTML = '';
+    perfiles.forEach(p => {
+      const rateHora = costeHoraDesdeBruto(p.bruto);
+      const row = document.createElement('div');
+      row.className = 'perfil-row';
+      row.innerHTML = `
+        <input type="text" value="${p.nombre}" data-role="nombre" data-id="${p.id}">
+        <input type="number" min="0" value="${p.bruto}" data-role="bruto" data-id="${p.id}">
+        <span class="perfil-rate">${fmt(rateHora)} €</span>
+        <button class="row-del" data-role="del" data-id="${p.id}" title="Eliminar perfil">×</button>
+      `;
+      cont.appendChild(row);
+    });
+
+    cont.querySelectorAll('[data-role="nombre"]').forEach(el => el.addEventListener('input', e => {
+      const p = perfiles.find(x => x.id === e.target.dataset.id);
+      if (p) { p.nombre = e.target.value; renderAsistentes(); calcular(); }
+    }));
+    cont.querySelectorAll('[data-role="bruto"]').forEach(el => el.addEventListener('input', e => {
+      const p = perfiles.find(x => x.id === e.target.dataset.id);
+      if (p) { p.bruto = +e.target.value || 0; renderPerfiles(); renderAsistentes(); calcular(); }
+    }));
+    cont.querySelectorAll('[data-role="del"]').forEach(el => el.addEventListener('click', e => {
+      if (perfiles.length <= 1) return;
+      const id = e.target.dataset.id;
+      perfiles = perfiles.filter(p => p.id !== id);
+      asistentes.forEach(a => { if (a.perfilId === id) a.perfilId = perfiles[0].id; });
+      renderPerfiles(); renderAsistentes(); calcular();
+    }));
+  }
+
+  $('addPerfil').addEventListener('click', () => {
+    perfiles.push({ id: uid(), nombre: 'Nuevo perfil', bruto: 30000 });
+    renderPerfiles(); renderAsistentes(); calcular();
+  });
+
+  // ---------- RENDER: ASISTENTES ----------
+  function renderAsistentes(){
+    const cont = $('asistentesList');
+    cont.innerHTML = '';
+    asistentes.forEach(a => {
+      const rateHora = costeHoraAsistente(a);
+      const row = document.createElement('div');
+      row.className = 'asistente-row';
+
+      let opciones = perfiles.map(p => `<option value="${p.id}" ${(!a.personalizado && a.perfilId===p.id) ? 'selected' : ''}>${p.nombre}</option>`).join('');
+      opciones += `<option value="personalizado" ${a.personalizado ? 'selected' : ''}>Personalizado…</option>`;
+
+      row.innerHTML = `
+        <input type="text" placeholder="Nombre" value="${a.nombre}" data-role="nombre" data-id="${a.id}">
+        <select data-role="perfil" data-id="${a.id}">${opciones}</select>
+        <span class="perfil-rate">${fmt(rateHora)} €</span>
+        <button class="row-del" data-role="del" data-id="${a.id}" title="Eliminar asistente">×</button>
+        <div class="custom-bruto ${a.personalizado ? 'show' : ''}" data-id="${a.id}">
+          <input type="number" min="0" value="${a.brutoPropio || ''}" placeholder="Bruto anual" data-role="brutoPropio" data-id="${a.id}">
+          <span>€/año</span>
+        </div>
+      `;
+      cont.appendChild(row);
+    });
+
+    cont.querySelectorAll('[data-role="nombre"]').forEach(el => el.addEventListener('input', e => {
+      const a = asistentes.find(x => x.id === e.target.dataset.id);
+      if (a) a.nombre = e.target.value;
+    }));
+    cont.querySelectorAll('[data-role="perfil"]').forEach(el => el.addEventListener('change', e => {
+      const a = asistentes.find(x => x.id === e.target.dataset.id);
+      if (!a) return;
+      if (e.target.value === 'personalizado'){
+        a.personalizado = true;
+      } else {
+        a.personalizado = false;
+        a.perfilId = e.target.value;
+      }
+      renderAsistentes(); calcular();
+    }));
+    cont.querySelectorAll('[data-role="brutoPropio"]').forEach(el => el.addEventListener('input', e => {
+      const a = asistentes.find(x => x.id === e.target.dataset.id);
+      if (a) { a.brutoPropio = +e.target.value || 0; renderAsistentes(); calcular(); }
+    }));
+    cont.querySelectorAll('[data-role="del"]').forEach(el => el.addEventListener('click', e => {
+      const id = e.target.dataset.id;
+      asistentes = asistentes.filter(a => a.id !== id);
+      renderAsistentes(); calcular();
+    }));
+
+    $('totalAsistentes').textContent = asistentes.length + (asistentes.length === 1 ? ' persona' : ' personas');
+  }
+
+  $('addAsistente').addEventListener('click', () => {
+    asistentes.push({ id: uid(), nombre: '', perfilId: perfiles[0].id, personalizado: false, brutoPropio: null });
+    renderAsistentes(); calcular();
+  });
+
+  // ---------- MODALIDAD ----------
+  $('btn-remota').addEventListener('click', () => setModo('remota'));
+  $('btn-presencial').addEventListener('click', () => setModo('presencial'));
+
+  function setModo(m){
+    modo = m;
+    $('btn-remota').classList.toggle('active', m==='remota');
+    $('btn-presencial').classList.toggle('active', m==='presencial');
+    $('salaField').style.display = m==='presencial' ? 'flex' : 'none';
+    calcular();
+  }
+
+  // ---------- INPUTS GLOBALES ----------
+  ['horasAnuales','cargasPct','duracion','retraso','costeSala'].forEach(id => {
+    $(id).addEventListener('input', () => { renderPerfiles(); renderAsistentes(); calcular(); });
+  });
+
+  // ---------- CÁLCULO PRINCIPAL ----------
+  function calcular(){
+    const duracion = Math.max(0, +$('duracion').value || 0);
+    const retraso = Math.max(0, +$('retraso').value || 0);
+    const costeSalaHora = Math.max(0, +$('costeSala').value || 0);
+    const tiempoTotalMin = duracion + retraso;
+
+    // agregación por perfil (o "Personalizado") para el desglose
+    const grupos = {};
+    let costeHoraCombinado = 0;
+
+    asistentes.forEach(a => {
+      const rate = costeHoraAsistente(a);
+      costeHoraCombinado += rate;
+      const clave = a.personalizado ? 'Personalizado' : (perfiles.find(p => p.id === a.perfilId)?.nombre || 'Sin perfil');
+      grupos[clave] = (grupos[clave] || 0) + rate;
+    });
+
+    const costeAsistentesTotal = costeHoraCombinado / 60 * tiempoTotalMin;
+    const costeRetraso = costeHoraCombinado / 60 * retraso;
+    const costeSalaTotal = modo === 'presencial' ? (costeSalaHora / 60 * tiempoTotalMin) : 0;
+
+    const total = costeAsistentesTotal + costeSalaTotal;
+    ultimoTotal = total;
+
+    // pintar desglose
+    const bd = $('breakdownList');
+    bd.innerHTML = '';
+    Object.entries(grupos).forEach(([nombre, rateGrupo]) => {
+      const costeGrupo = rateGrupo / 60 * tiempoTotalMin;
+      const row = document.createElement('div');
+      row.className = 'bd-row';
+      row.innerHTML = `<span class="k">${nombre}</span><span class="v">${fmt(costeGrupo)} €</span>`;
+      bd.appendChild(row);
+    });
+    const rowRetraso = document.createElement('div');
+    rowRetraso.className = 'bd-row alarm';
+    rowRetraso.innerHTML = `<span class="k">— de los cuales, retraso</span><span class="v">${fmt(costeRetraso)} €</span>`;
+    bd.appendChild(rowRetraso);
+    if (modo === 'presencial'){
+      const rowSala = document.createElement('div');
+      rowSala.className = 'bd-row';
+      rowSala.innerHTML = `<span class="k">Sala / recursos</span><span class="v">${fmt(costeSalaTotal)} €</span>`;
+      bd.appendChild(rowSala);
+    }
+
+    $('meterValue').textContent = fmt(total);
+    $('costePorMinuto').textContent = fmt(tiempoTotalMin > 0 ? total / tiempoTotalMin : 0) + ' €';
+  }
+
+  // ---------- SIMULACIÓN EN TIEMPO REAL (comprimida) ----------
+  let simRunning = false;
+  $('simBtn').addEventListener('click', () => {
+    if (simRunning) return;
+    simRunning = true;
+    $('simBtn').disabled = true;
+    $('statusLabel').textContent = 'reunión en curso';
+    $('statusLabel').style.color = 'var(--accent-alarm)';
+    $('simNote').textContent = 'Simulando el paso del tiempo…';
+
+    const target = ultimoTotal;
+    const durationMs = 6000;
+    const start = performance.now();
+
+    function frame(now){
+      const t = Math.min(1, (now - start) / durationMs);
+      const eased = t < 0.15 ? t*0.4 : 0.06 + (t-0.15)/0.85*0.94;
+      $('meterValue').textContent = fmt(target * Math.min(1, eased));
+      if (t < 1){
+        requestAnimationFrame(frame);
+      } else {
+        $('meterValue').textContent = fmt(target);
+        $('statusLabel').textContent = 'reunión terminada';
+        $('statusLabel').style.color = 'var(--accent-gold)';
+        $('simNote').textContent = 'La animación comprime la reunión completa en unos segundos';
+        $('simBtn').disabled = false;
+        simRunning = false;
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+
+  // ---------- INICIO ----------
+  renderPerfiles();
+  renderAsistentes();
+  setModo('remota');
+  calcular();
+</script>
+
+</body>
+</html>
