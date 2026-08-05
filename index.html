@@ -427,7 +427,7 @@
     border-top:1px solid var(--border);
   }
   .testi-avatar{
-    width:42px; height:42px;
+    width:46px; height:46px;
     border-radius:50%;
     background:var(--navy);
     color:var(--white);
@@ -437,6 +437,11 @@
     font-weight:700;
     font-size:14px;
     flex-shrink:0;
+    overflow:hidden;
+  }
+  .testi-avatar img{
+    width:100%; height:100%;
+    object-fit:cover;
   }
   .testi-name{
     font-weight:700;
@@ -653,7 +658,7 @@
       <span class="testi-tag">MeetCalc</span>
       <p class="testi-quote" data-i18n="testi1Quote">En el primer trimestre redujimos un 30% las reuniones de más de cinco personas. Ver el coste en euros, en directo, cambió la conversación en los comités de dirección.</p>
       <div class="testi-person">
-        <div class="testi-avatar">MR</div>
+        <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&h=200&q=80" alt="Marta Ribas" data-i18n-alt="testi1Alt"></div>
         <div>
           <div class="testi-name">Marta Ribas</div>
           <div class="testi-role" data-i18n="testi1Role">Directora de Organización y Personas · Ajuntament de Montverd</div>
@@ -665,7 +670,7 @@
       <span class="testi-tag">MailCalc</span>
       <p class="testi-quote" data-i18n="testi2Quote">Empezamos a preguntarnos si un hilo de veinte respuestas con toda la plantilla en copia tenía sentido. MailCalc nos dio el argumento que nos faltaba para cambiarlo.</p>
       <div class="testi-person">
-        <div class="testi-avatar">JC</div>
+        <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1627161684458-a62da52b51c3?auto=format&fit=crop&w=200&h=200&q=80" alt="Jordi Camps" data-i18n-alt="testi2Alt"></div>
         <div>
           <div class="testi-name">Jordi Camps</div>
           <div class="testi-role" data-i18n="testi2Role">Responsable de Transformación Digital · Consorci Metropolità de Serveis</div>
@@ -716,8 +721,10 @@
       testiDesc: 'Ejemplos ilustrativos de cómo equipos reales podrían usar MeetCalc y MailCalc para cambiar sus hábitos.',
       testi1Quote: 'En el primer trimestre redujimos un 30% las reuniones de más de cinco personas. Ver el coste en euros, en directo, cambió la conversación en los comités de dirección.',
       testi1Role: 'Directora de Organización y Personas · Ajuntament de Montverd',
+      testi1Alt: 'Retrato de Marta Ribas',
       testi2Quote: 'Empezamos a preguntarnos si un hilo de veinte respuestas con toda la plantilla en copia tenía sentido. MailCalc nos dio el argumento que nos faltaba para cambiarlo.',
       testi2Role: 'Responsable de Transformación Digital · Consorci Metropolità de Serveis',
+      testi2Alt: 'Retrato de Jordi Camps',
       footerText: 'MeetCalc · fotografías: Unsplash (licencia gratuita) · sube los tres archivos (index.html, simulador-coste-reuniones.html, simulador-coste-hilos-email.html) a la misma carpeta para que los enlaces funcionen.'
     },
     ca: {
@@ -751,8 +758,10 @@
       testiDesc: 'Exemples il·lustratius de com equips reals podrien fer servir MeetCalc i MailCalc per canviar els seus hàbits.',
       testi1Quote: 'En el primer trimestre vam reduir un 30% les reunions de més de cinc persones. Veure el cost en euros, en directe, va canviar la conversa als comitès de direcció.',
       testi1Role: 'Directora d\u2019Organització i Persones · Ajuntament de Montverd',
+      testi1Alt: 'Retrat de Marta Ribas',
       testi2Quote: 'Vam començar a preguntar-nos si un fil de vint respostes amb tota la plantilla en còpia tenia sentit. MailCalc ens va donar l\u2019argument que ens faltava per canviar-ho.',
       testi2Role: 'Responsable de Transformació Digital · Consorci Metropolità de Serveis',
+      testi2Alt: 'Retrat de Jordi Camps',
       footerText: 'MeetCalc · fotografies: Unsplash (llicència gratuïta) · puja els tres arxius (index.html, simulador-coste-reuniones.html, simulador-coste-hilos-email.html) a la mateixa carpeta perquè els enllaços funcionin.'
     }
   };
