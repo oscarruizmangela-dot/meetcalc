@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>El coste de reunirse — Simulador</title>
+<title>MeetCalc — El coste de reunirse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -32,6 +32,38 @@
   }
   a{color:inherit;}
   button{font-family:'IBM Plex Sans', sans-serif;}
+
+  /* ---------- TOPBAR ---------- */
+  .topbar{
+    max-width:1100px;
+    margin:0 auto;
+    padding:26px 24px 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .topbar .mark{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:.04em;
+    border:1px solid var(--ink);
+    padding:4px 8px;
+    border-radius:3px;
+    text-decoration:none;
+    color:var(--ink);
+  }
+  .topbar .mark span{color:var(--accent-alarm);}
+  .topbar .home-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .topbar .home-link:hover{color:var(--accent-gold);}
 
   /* ---------- HEADER ---------- */
   header{
@@ -492,6 +524,12 @@
 </head>
 <body>
 
+<div class="topbar">
+  <a href="index.html" class="mark">Meet<span>Calc</span></a>
+  <a href="index.html" class="home-link">← Inicio</a>
+</div>
+
+
 <header>
   <div class="eyebrow">Simulador · v0.3</div>
   <h1>¿Cuánto cuesta<br>esta reunión?</h1>
@@ -502,7 +540,7 @@
   <a href="simulador-coste-hilos-email.html">
     <span class="icon">✉</span>
     <span class="txt">
-      <span class="tag">Otro simulador</span>
+      <span class="tag">Otro simulador · MailCalc</span>
       <span class="title">¿Cuánto cuesta un hilo de emails?</span>
       <span class="desc">Nº de emails, destinatarios en Para/CC y palabras por email — el mismo cálculo, aplicado al correo.</span>
     </span>
