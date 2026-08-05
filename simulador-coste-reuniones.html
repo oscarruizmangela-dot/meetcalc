@@ -5,55 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MeetCalc — El coste de reunirse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper: #EEF0E2;
-    --paper-line: #CBD1B8;
-    --surface: #FBFAF3;
-    --ink: #22301F;
-    --ink-soft: #5B6555;
-    --accent-alarm: #A23E2A;
-    --accent-alarm-soft: #A23E2A22;
-    --accent-gold: #A9812E;
-    --accent-gold-soft: #A9812E1c;
-    --ok: #3D6B4A;
-    --radius: 4px;
+    --navy: #00205B;
+    --blue: #00338D;
+    --sky: #0091DA;
+    --ink: #0B1F33;
+    --ink-soft: #56626F;
+    --border: #DEE3E8;
+    --surface: #F4F6F8;
+    --white: #FFFFFF;
+    --accent: #E4002B;
+    --accent-soft: #E4002B14;
+    --ok: #0A7A45;
+    --radius: 2px;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background:
-      repeating-linear-gradient(180deg, transparent, transparent 27px, var(--paper-line) 28px),
-      var(--paper);
+    background:var(--white);
     color:var(--ink);
-    font-family:'IBM Plex Sans', sans-serif;
+    font-family:'Inter', sans-serif;
     padding:0 0 80px 0;
   }
   a{color:inherit;}
-  button{font-family:'IBM Plex Sans', sans-serif;}
+  button{font-family:'Inter', sans-serif;}
 
   /* ---------- TOPBAR ---------- */
   .topbar{
     max-width:1100px;
     margin:0 auto;
-    padding:26px 24px 0;
+    padding:18px 24px;
     display:flex;
     align-items:center;
     justify-content:space-between;
+    border-bottom:1px solid var(--border);
+    margin-bottom:40px;
   }
   .topbar .mark{
-    font-family:'IBM Plex Mono', monospace;
-    font-weight:700;
-    font-size:14px;
-    letter-spacing:.04em;
-    border:1px solid var(--ink);
-    padding:4px 8px;
-    border-radius:3px;
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-size:17px;
+    letter-spacing:-0.01em;
+    border:none;
+    padding:0;
+    border-radius:0;
     text-decoration:none;
-    color:var(--ink);
+    color:var(--navy);
   }
-  .topbar .mark span{color:var(--accent-alarm);}
+  .topbar .mark span{color:var(--accent);}
   .topbar .home-link{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
@@ -63,38 +64,62 @@
     align-items:center;
     gap:6px;
   }
-  .topbar .home-link:hover{color:var(--accent-gold);}
+  .topbar .home-link:hover{color:var(--blue);}
+  .lang-switch{
+    display:flex;
+    border:1px solid var(--border);
+    border-radius:0;
+    overflow:hidden;
+    background:var(--white);
+  }
+  .lang-switch button{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.04em;
+    padding:6px 13px;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .lang-switch button + button{border-left:1px solid var(--border);}
+  .lang-switch button.active{
+    background:var(--navy);
+    color:var(--white);
+  }
 
   /* ---------- HEADER ---------- */
   header{
-    padding:52px 24px 34px;
+    padding:0 24px 34px;
     max-width:1100px;
     margin:0 auto;
-    border-bottom:2px solid var(--ink);
+    border-bottom:1px solid var(--border);
   }
   .eyebrow{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
-    letter-spacing:.16em;
+    font-weight:600;
+    letter-spacing:.14em;
     text-transform:uppercase;
-    color:var(--accent-alarm);
+    color:var(--sky);
     display:flex;
     align-items:center;
     gap:10px;
   }
   .eyebrow::before{
     content:"";
-    width:8px;height:8px;border-radius:50%;
-    background:var(--accent-alarm);
-    box-shadow:0 0 0 3px var(--accent-alarm-soft);
+    width:7px;height:7px;
+    background:var(--accent);
   }
   h1{
-    font-family:'IBM Plex Slab', serif;
-    font-weight:700;
-    font-size:clamp(34px, 5vw, 56px);
-    line-height:1.02;
-    margin:14px 0 12px;
-    letter-spacing:-0.01em;
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-size:clamp(32px, 4.6vw, 48px);
+    line-height:1.05;
+    margin:16px 0 14px;
+    letter-spacing:-0.02em;
+    color:var(--navy);
   }
   header p{
     font-size:16px;
@@ -116,20 +141,20 @@
     gap:16px;
     text-decoration:none;
     background:var(--surface);
-    border:1px solid var(--paper-line);
-    border-left:4px solid var(--accent-gold);
-    border-radius:var(--radius);
+    border:1px solid var(--border);
+    border-left:3px solid var(--sky);
+    border-radius:0;
     padding:16px 20px;
     transition:border-color .15s ease, background .15s ease;
   }
   .sim-banner a:hover{
-    border-left-color:var(--accent-alarm);
-    background:#fff;
+    border-left-color:var(--accent);
+    background:var(--white);
   }
   .sim-banner .icon{
     font-family:'IBM Plex Mono', monospace;
     font-size:20px;
-    color:var(--accent-gold);
+    color:var(--blue);
     flex-shrink:0;
   }
   .sim-banner .txt{flex:1;}
@@ -138,15 +163,16 @@
     font-size:10.5px;
     letter-spacing:.12em;
     text-transform:uppercase;
-    color:var(--accent-gold);
+    color:var(--sky);
     display:block;
     margin-bottom:3px;
+    font-weight:700;
   }
   .sim-banner .txt .title{
-    font-family:'IBM Plex Slab', serif;
-    font-weight:600;
+    font-family:'Inter', sans-serif;
+    font-weight:700;
     font-size:17px;
-    color:var(--ink);
+    color:var(--navy);
   }
   .sim-banner .txt .desc{
     font-size:13px;
@@ -167,8 +193,10 @@
     padding:40px 24px 0;
     display:grid;
     grid-template-columns: 1.15fr 0.85fr;
-    gap:28px;
-    align-items:start;
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    align-items:stretch;
   }
   @media (max-width: 860px){
     .wrap{grid-template-columns:1fr;}
@@ -176,28 +204,29 @@
 
   /* ---------- LEDGER (form) ---------- */
   .ledger{
-    background:var(--surface);
-    border:1px solid var(--paper-line);
-    border-radius:var(--radius);
+    background:var(--white);
+    border:none;
+    border-radius:0;
     padding:6px 0;
   }
   .ledger-section{
-    padding:22px 26px;
-    border-bottom:1px solid var(--paper-line);
+    padding:26px 28px;
+    border-bottom:1px solid var(--border);
   }
   .ledger-section:last-child{border-bottom:none;}
   .section-label{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
-    letter-spacing:.14em;
+    font-weight:700;
+    letter-spacing:.12em;
     text-transform:uppercase;
-    color:var(--accent-gold);
+    color:var(--blue);
     margin:0 0 6px;
     display:flex;
     justify-content:space-between;
     align-items:center;
   }
-  .section-label span.n{color:var(--ink-soft); text-transform:none; letter-spacing:0;}
+  .section-label span.n{color:var(--ink-soft); text-transform:none; letter-spacing:0; font-weight:500;}
   .section-help{
     font-size:12.5px;
     color:var(--ink-soft);
@@ -212,7 +241,7 @@
     gap:14px;
     margin-bottom:18px;
     padding-bottom:18px;
-    border-bottom:1px dashed var(--paper-line);
+    border-bottom:1px dashed var(--border);
   }
   .field{
     display:flex;
@@ -222,6 +251,7 @@
   .field label{
     font-size:12.5px;
     color:var(--ink-soft);
+    font-weight:500;
   }
   .unit-wrap{
     display:flex;
@@ -234,10 +264,10 @@
     font-size:12px;
     color:var(--ink-soft);
     white-space:nowrap;
-    background:var(--paper);
-    border:1px solid var(--paper-line);
+    background:var(--surface);
+    border:1px solid var(--border);
     padding:8px 10px;
-    border-radius:3px;
+    border-radius:0;
   }
 
   input[type=number], input[type=text]{
@@ -245,16 +275,16 @@
     font-family:'IBM Plex Mono', monospace;
     font-size:14px;
     font-weight:600;
-    padding:8px 9px;
-    border:1px solid var(--paper-line);
-    border-radius:3px;
-    background:#fff;
+    padding:9px 10px;
+    border:1px solid var(--border);
+    border-radius:0;
+    background:var(--white);
     color:var(--ink);
   }
   input[type=number]{text-align:right;}
-  input[type=text]{font-family:'IBM Plex Sans'; font-weight:500; text-align:left;}
+  input[type=text]{font-family:'Inter', sans-serif; font-weight:500; text-align:left;}
+  input:focus, select:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,51,141,0.12);}
 
-  /* celdas de importe: sin flechas de incremento/decremento, solo entero */
   input.input-importe::-webkit-outer-spin-button,
   input.input-importe::-webkit-inner-spin-button{
     -webkit-appearance:none;
@@ -264,18 +294,18 @@
     -moz-appearance:textfield;
     appearance:textfield;
   }
+
   select{
     width:100%;
-    font-family:'IBM Plex Sans';
+    font-family:'Inter', sans-serif;
     font-size:13.5px;
     font-weight:500;
-    padding:8px 9px;
-    border:1px solid var(--paper-line);
-    border-radius:3px;
-    background:#fff;
+    padding:9px 10px;
+    border:1px solid var(--border);
+    border-radius:0;
+    background:var(--white);
     color:var(--ink);
   }
-  input:focus, select:focus{outline:2px solid var(--accent-gold); outline-offset:1px;}
 
   /* perfil rows */
   .perfil-row{
@@ -288,31 +318,32 @@
   .perfil-rate{
     font-family:'IBM Plex Mono', monospace;
     font-size:13px;
-    font-weight:600;
+    font-weight:700;
     color:var(--ok);
     text-align:right;
     white-space:nowrap;
   }
   .row-del{
-    width:26px; height:26px;
-    border:1px solid var(--paper-line);
-    background:#fff;
-    border-radius:3px;
-    color:var(--accent-alarm);
+    width:28px; height:28px;
+    border:1px solid var(--border);
+    background:var(--white);
+    border-radius:0;
+    color:var(--accent);
     cursor:pointer;
     font-size:14px;
     line-height:1;
     display:flex; align-items:center; justify-content:center;
   }
-  .row-del:hover{background:var(--accent-alarm-soft);}
+  .row-del:hover{background:var(--accent-soft); border-color:var(--accent);}
   .col-headers{
     display:grid;
     grid-template-columns: 1fr 110px 90px 26px;
     gap:8px;
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
+    font-weight:600;
     text-transform:uppercase;
-    letter-spacing:.08em;
+    letter-spacing:.06em;
     color:var(--ink-soft);
     margin-bottom:8px;
   }
@@ -345,8 +376,9 @@
     gap:8px;
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
+    font-weight:600;
     text-transform:uppercase;
-    letter-spacing:.08em;
+    letter-spacing:.06em;
     color:var(--ink-soft);
     margin-bottom:8px;
   }
@@ -355,16 +387,16 @@
   .add-btn{
     width:100%;
     margin-top:4px;
-    padding:9px;
-    border:1px dashed var(--paper-line);
+    padding:10px;
+    border:1px dashed var(--border);
     background:transparent;
-    border-radius:3px;
+    border-radius:0;
     color:var(--ink-soft);
     font-size:13px;
-    font-weight:500;
+    font-weight:600;
     cursor:pointer;
   }
-  .add-btn:hover{border-color:var(--accent-gold); color:var(--accent-gold);}
+  .add-btn:hover{border-color:var(--blue); border-style:solid; color:var(--blue);}
 
   .field-row{
     display:grid;
@@ -374,39 +406,41 @@
 
   .toggle-group{
     display:flex;
-    gap:8px;
+    gap:0;
+    border:1px solid var(--border);
   }
   .toggle-btn{
     flex:1;
     padding:11px 10px;
     text-align:center;
-    border:1px solid var(--paper-line);
-    border-radius:3px;
-    background:#fff;
+    border:none;
+    border-radius:0;
+    background:var(--white);
     font-size:13.5px;
-    font-weight:500;
+    font-weight:600;
     cursor:pointer;
     color:var(--ink-soft);
     transition:all .15s ease;
   }
+  .toggle-btn + .toggle-btn{border-left:1px solid var(--border);}
   .toggle-btn.active{
-    border-color:var(--ink);
-    background:var(--ink);
-    color:var(--paper);
+    border-color:var(--navy);
+    background:var(--navy);
+    color:var(--white);
   }
 
   /* ---------- METER (sticky right panel) ---------- */
   .meter-panel{
     position:sticky;
     top:24px;
-    background:var(--ink);
-    color:var(--paper);
-    border-radius:var(--radius);
+    background:var(--navy);
+    color:var(--white);
+    border-radius:0;
     overflow:hidden;
-    border:1px solid var(--ink);
+    border:none;
   }
   .meter-head{
-    padding:20px 24px 0;
+    padding:22px 26px 0;
     display:flex;
     justify-content:space-between;
     align-items:baseline;
@@ -414,68 +448,69 @@
   .meter-head .lbl{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
-    letter-spacing:.14em;
+    font-weight:600;
+    letter-spacing:.12em;
     text-transform:uppercase;
-    color:#C7CDB7;
+    color:#8FA9CC;
   }
   .meter-head .status{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
-    color:var(--accent-gold);
+    color:var(--sky);
   }
   .meter-display{
-    padding:14px 24px 6px;
+    padding:16px 26px 6px;
     text-align:left;
   }
   .meter-number{
-    font-family:'IBM Plex Mono', monospace;
-    font-weight:700;
-    font-size:clamp(40px, 6vw, 58px);
-    letter-spacing:-0.01em;
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-size:clamp(40px, 6vw, 56px);
+    letter-spacing:-0.02em;
     line-height:1;
     display:flex;
     align-items:baseline;
     gap:6px;
   }
-  .meter-number .sym{font-size:0.5em; color:var(--accent-gold); font-weight:600;}
+  .meter-number .sym{font-size:0.5em; color:var(--sky); font-weight:700;}
   .meter-sub{
     font-size:12.5px;
-    color:#C7CDB7;
-    margin-top:8px;
+    color:#96A9C4;
+    margin-top:10px;
   }
-  .meter-sub b{color:var(--paper); font-weight:600;}
+  .meter-sub b{color:var(--white); font-weight:700;}
 
   .rule{
     height:1px;
-    background:#3A4736;
-    margin:18px 24px 0;
+    background:#25407A;
+    margin:20px 26px 0;
   }
 
   .breakdown{
-    padding:18px 24px 4px;
+    padding:18px 26px 4px;
   }
   .bd-row{
     display:flex;
     justify-content:space-between;
     font-size:13.5px;
-    padding:8px 0;
-    border-bottom:1px dashed #3A4736;
+    padding:9px 0;
+    border-bottom:1px solid #1A3868;
   }
-  .bd-row.alarm{color:var(--accent-alarm);}
-  .bd-row .k{color:#C7CDB7;}
-  .bd-row .v{font-family:'IBM Plex Mono', monospace; font-weight:600; color:var(--paper);}
-  .bd-row.alarm .v{color:var(--accent-alarm);}
+  .bd-row.alarm{color:#FF8A80;}
+  .bd-row .k{color:#96A9C4;}
+  .bd-row .v{font-family:'IBM Plex Mono', monospace; font-weight:700; color:var(--white);}
+  .bd-row.alarm .v{color:#FF8A80;}
 
   .meter-cta{
-    padding:20px 24px 24px;
+    padding:22px 26px 26px;
   }
   .calc-btn{
     width:100%;
     padding:14px;
-    background:var(--accent-gold);
-    color:var(--ink);
+    background:var(--sky);
+    color:var(--navy);
     border:none;
-    border-radius:3px;
+    border-radius:0;
     font-weight:700;
     font-size:14.5px;
     cursor:pointer;
@@ -486,26 +521,26 @@
   .sim-btn{
     width:100%;
     padding:14px;
-    background:var(--accent-alarm);
-    color:#fff;
-    border:none;
-    border-radius:3px;
+    background:transparent;
+    color:var(--white);
+    border:1px solid #3A5A93;
+    border-radius:0;
     font-weight:600;
     font-size:14.5px;
     cursor:pointer;
-    transition:filter .15s ease;
+    transition:background .15s ease;
   }
-  .sim-btn:hover{filter:brightness(1.08);}
-  .sim-btn:disabled{opacity:.55; cursor:default;}
+  .sim-btn:hover{background:#0A2E6E;}
+  .sim-btn:disabled{opacity:.5; cursor:default;}
   .sim-note{
     font-size:11.5px;
-    color:#8D9682;
+    color:#7086A8;
     margin-top:10px;
     text-align:center;
   }
   .stale-note{
     font-size:11.5px;
-    color:var(--accent-gold);
+    color:#FFC24B;
     text-align:center;
     margin:0 0 10px;
     display:none;
@@ -515,7 +550,8 @@
   footer{
     max-width:1100px;
     margin:40px auto 0;
-    padding:0 24px;
+    padding:20px 24px 0;
+    border-top:1px solid var(--border);
     font-size:12px;
     color:var(--ink-soft);
     font-family:'IBM Plex Mono', monospace;
@@ -526,23 +562,29 @@
 
 <div class="topbar">
   <a href="index.html" class="mark">Meet<span>Calc</span></a>
-  <a href="index.html" class="home-link">← Inicio</a>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <a href="index.html" class="home-link" data-i18n="homeLink">← Inicio</a>
+    <div class="lang-switch">
+      <button data-lang="es" id="btnLangEs">ES</button>
+      <button data-lang="ca" id="btnLangCa">CA</button>
+    </div>
+  </div>
 </div>
 
 
 <header>
   <div class="eyebrow">Simulador · v0.3</div>
-  <h1>¿Cuánto cuesta<br>esta reunión?</h1>
-  <p>Define perfiles con su bruto/año, añade a los asistentes por nombre, indica duración y retraso. Cuando lo tengas listo, pulsa «Calcular coste» para ver el resultado.</p>
+  <h1 data-i18n-html="headerTitle">¿Cuánto cuesta<br>esta reunión?</h1>
+  <p data-i18n="headerDesc">Define perfiles con su bruto/año, añade a los asistentes por nombre, indica duración y retraso. Cuando lo tengas listo, pulsa «Calcular coste» para ver el resultado.</p>
 </header>
 
 <div class="sim-banner">
   <a href="simulador-coste-hilos-email.html">
     <span class="icon">✉</span>
     <span class="txt">
-      <span class="tag">Otro simulador · MailCalc</span>
-      <span class="title">¿Cuánto cuesta un hilo de emails?</span>
-      <span class="desc">Nº de emails, destinatarios en Para/CC y palabras por email — el mismo cálculo, aplicado al correo.</span>
+      <span class="tag" data-i18n="bannerTag">Otro simulador · MailCalc</span>
+      <span class="title" data-i18n="bannerTitle">¿Cuánto cuesta un hilo de emails?</span>
+      <span class="desc" data-i18n="bannerDesc">Nº de emails, destinatarios en Para/CC y palabras por email — el mismo cálculo, aplicado al correo.</span>
     </span>
     <span class="arrow">→</span>
   </a>
@@ -555,19 +597,19 @@
 
     <!-- MANTENIMIENTO DE PERFILES -->
     <div class="ledger-section">
-      <div class="section-label">Mantenimiento de perfiles</div>
-      <p class="section-help">El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y la jornada semanal (52 semanas/año).</p>
+      <div class="section-label" data-i18n="sectionPerfilesLabel">Mantenimiento de perfiles</div>
+      <p class="section-help" data-i18n="sectionPerfilesHelp">El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y la jornada semanal (52 semanas/año).</p>
 
       <div class="config-row">
         <div class="field">
-          <label>Horas semanales</label>
+          <label data-i18n="labelHorasSemana">Horas semanales</label>
           <div class="unit-wrap">
             <input type="number" min="1" value="40" id="horasSemana">
-            <span class="unit-tag">h/semana</span>
+            <span class="unit-tag" data-i18n="unitHSemana">h/semana</span>
           </div>
         </div>
         <div class="field">
-          <label>Cargas sociales (sobre bruto)</label>
+          <label data-i18n="labelCargas">Cargas sociales (sobre bruto)</label>
           <div class="unit-wrap">
             <input type="number" min="0" value="32" id="cargasPct">
             <span class="unit-tag">%</span>
@@ -576,46 +618,46 @@
       </div>
 
       <div class="col-headers">
-        <span>Perfil</span>
-        <span>Bruto/año</span>
-        <span>€/h</span>
+        <span data-i18n="colPerfil">Perfil</span>
+        <span data-i18n="colBrutoAnyo">Bruto/año</span>
+        <span data-i18n="colEurH">€/h</span>
         <span></span>
       </div>
       <div id="perfilesList"></div>
-      <button class="add-btn" id="addPerfil">+ Añadir perfil</button>
+      <button class="add-btn" id="addPerfil" data-i18n="btnAddPerfil">+ Añadir perfil</button>
     </div>
 
     <!-- ASISTENTES -->
     <div class="ledger-section">
-      <div class="section-label">Asistentes a la reunión <span class="n" id="totalAsistentes">0 personas</span></div>
-      <p class="section-help">Asigna un perfil a cada persona, o elige «Personalizado» para introducir su bruto/año directamente.</p>
+      <div class="section-label"><span data-i18n="sectionAsistentesLabel">Asistentes a la reunión</span> <span class="n" id="totalAsistentes">0 personas</span></div>
+      <p class="section-help" data-i18n="sectionAsistentesHelp">Asigna un perfil a cada persona, o elige «Personalizado» para introducir su bruto/año directamente.</p>
 
       <div class="asis-col-headers">
-        <span>Nombre</span>
-        <span>Perfil</span>
-        <span>€/h</span>
+        <span data-i18n="colNombre">Nombre</span>
+        <span data-i18n="colPerfil">Perfil</span>
+        <span data-i18n="colEurH">€/h</span>
         <span></span>
       </div>
       <div id="asistentesList"></div>
-      <button class="add-btn" id="addAsistente">+ Añadir asistente</button>
+      <button class="add-btn" id="addAsistente" data-i18n="btnAddAsistente">+ Añadir asistente</button>
     </div>
 
     <!-- TIEMPO -->
     <div class="ledger-section">
-      <div class="section-label">Tiempo</div>
+      <div class="section-label" data-i18n="sectionTiempoLabel">Tiempo</div>
       <div class="field-row">
         <div class="field">
-          <label>Duración prevista</label>
+          <label data-i18n="labelDuracion">Duración prevista</label>
           <div class="unit-wrap">
             <input type="number" min="0" value="45" id="duracion">
-            <span class="unit-tag">minutos</span>
+            <span class="unit-tag" data-i18n="unitMinutos">minutos</span>
           </div>
         </div>
         <div class="field">
-          <label>Retraso al empezar</label>
+          <label data-i18n="labelRetraso">Retraso al empezar</label>
           <div class="unit-wrap">
             <input type="number" min="0" value="8" id="retraso">
-            <span class="unit-tag">minutos</span>
+            <span class="unit-tag" data-i18n="unitMinutos">minutos</span>
           </div>
         </div>
       </div>
@@ -623,13 +665,13 @@
 
     <!-- MODALIDAD -->
     <div class="ledger-section">
-      <div class="section-label">Modalidad</div>
+      <div class="section-label" data-i18n="sectionModalidadLabel">Modalidad</div>
       <div class="toggle-group">
-        <div class="toggle-btn active" id="btn-remota" data-mode="remota">Remota</div>
-        <div class="toggle-btn" id="btn-presencial" data-mode="presencial">Presencial</div>
+        <div class="toggle-btn active" id="btn-remota" data-mode="remota" data-i18n="btnRemota">Remota</div>
+        <div class="toggle-btn" id="btn-presencial" data-mode="presencial" data-i18n="btnPresencial">Presencial</div>
       </div>
       <div class="field" style="margin-top:14px; display:none;" id="salaField">
-        <label>Coste de la sala / recursos</label>
+        <label data-i18n="labelCosteSala">Coste de la sala / recursos</label>
         <div class="unit-wrap">
           <input type="number" class="input-importe" step="1" min="0" value="15" id="costeSala">
           <span class="unit-tag">€/h</span>
@@ -642,12 +684,12 @@
   <!-- METER -->
   <div class="meter-panel">
     <div class="meter-head">
-      <span class="lbl">Coste total estimado</span>
-      <span class="status" id="statusLabel">en reposo</span>
+      <span class="lbl" data-i18n="meterLbl">Coste total estimado</span>
+      <span class="status" id="statusLabel" data-i18n="statusReposo">en reposo</span>
     </div>
     <div class="meter-display">
       <div class="meter-number"><span class="sym">€</span><span id="meterValue">0,00</span></div>
-      <div class="meter-sub"><b id="costePorMinuto">0,00 €</b> por minuto de reunión</div>
+      <div class="meter-sub"><b id="costePorMinuto">0,00 €</b> <span data-i18n="meterSubSuffix">por minuto de reunión</span></div>
     </div>
 
     <div class="rule"></div>
@@ -657,20 +699,165 @@
     </div>
 
     <div class="meter-cta">
-      <div class="stale-note" id="staleNote">Hay cambios sin calcular ⓘ</div>
-      <button class="calc-btn" id="calcBtn">Calcular coste</button>
-      <button class="sim-btn" id="simBtn">▶ Simular en tiempo real</button>
-      <div class="sim-note" id="simNote">La animación comprime la reunión completa en unos segundos</div>
+      <div class="stale-note" id="staleNote" data-i18n="staleNoteText">Hay cambios sin calcular ⓘ</div>
+      <button class="calc-btn" id="calcBtn" data-i18n="btnCalcular">Calcular coste</button>
+      <button class="sim-btn" id="simBtn" data-i18n="btnSimular">▶ Simular en tiempo real</button>
+      <div class="sim-note" id="simNote" data-i18n="simNoteDefault">La animación comprime la reunión completa en unos segundos</div>
     </div>
   </div>
 
 </div>
 
-<footer>v0.3 — coste/hora = bruto/año × (1 + cargas sociales) ÷ (horas semanales × 52). Coste total = Σ(coste/h de cada asistente) × (duración + retraso) + sala.</footer>
+<footer data-i18n="footerText">v0.3 — coste/hora = bruto/año × (1 + cargas sociales) ÷ (horas semanales × 52). Coste total = Σ(coste/h de cada asistente) × (duración + retraso) + sala.</footer>
 
 <script>
   const $ = id => document.getElementById(id);
-  const fmt = n => n.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  // ---------- IDIOMA ----------
+  const I18N = {
+    es: {
+      homeLink: '← Inicio',
+      headerTitle: '¿Cuánto cuesta<br>esta reunión?',
+      headerDesc: 'Define perfiles con su bruto/año, añade a los asistentes por nombre, indica duración y retraso. Cuando lo tengas listo, pulsa «Calcular coste» para ver el resultado.',
+      bannerTag: 'Otro simulador · MailCalc',
+      bannerTitle: '¿Cuánto cuesta un hilo de emails?',
+      bannerDesc: 'Nº de emails, destinatarios en Para/CC y palabras por email — el mismo cálculo, aplicado al correo.',
+      sectionPerfilesLabel: 'Mantenimiento de perfiles',
+      sectionPerfilesHelp: 'El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y la jornada semanal (52 semanas/año).',
+      labelHorasSemana: 'Horas semanales',
+      unitHSemana: 'h/semana',
+      labelCargas: 'Cargas sociales (sobre bruto)',
+      colPerfil: 'Perfil',
+      colBrutoAnyo: 'Bruto/año',
+      colEurH: '€/h',
+      btnAddPerfil: '+ Añadir perfil',
+      sectionAsistentesLabel: 'Asistentes a la reunión',
+      sectionAsistentesHelp: 'Asigna un perfil a cada persona, o elige «Personalizado» para introducir su bruto/año directamente.',
+      colNombre: 'Nombre',
+      btnAddAsistente: '+ Añadir asistente',
+      sectionTiempoLabel: 'Tiempo',
+      labelDuracion: 'Duración prevista',
+      unitMinutos: 'minutos',
+      labelRetraso: 'Retraso al empezar',
+      sectionModalidadLabel: 'Modalidad',
+      btnRemota: 'Remota',
+      btnPresencial: 'Presencial',
+      labelCosteSala: 'Coste de la sala / recursos',
+      meterLbl: 'Coste total estimado',
+      statusReposo: 'en reposo',
+      meterSubSuffix: 'por minuto de reunión',
+      staleNoteText: 'Hay cambios sin calcular ⓘ',
+      btnCalcular: 'Calcular coste',
+      btnSimular: '▶ Simular en tiempo real',
+      simNoteDefault: 'La animación comprime la reunión completa en unos segundos',
+      footerText: 'v0.3 — coste/hora = bruto/año × (1 + cargas sociales) ÷ (horas semanales × 52). Coste total = Σ(coste/h de cada asistente) × (duración + retraso) + sala.',
+      delPerfilTitle: 'Eliminar perfil',
+      delAsistenteTitle: 'Eliminar asistente',
+      optPersonalizado: 'Personalizado…',
+      placeholderNombre: 'Nombre',
+      placeholderBrutoAnual: 'Bruto anual',
+      unitEurAnyo: '€/año',
+      personaSing: 'persona',
+      personaPlur: 'personas',
+      newPerfilName: 'Nuevo perfil',
+      grupoPersonalizado: 'Personalizado',
+      grupoSinPerfil: 'Sin perfil',
+      bdRetrasoLabel: '— de los cuales, retraso',
+      bdSalaLabel: 'Sala / recursos',
+      statusEnCurso: 'reunión en curso',
+      statusTerminada: 'reunión terminada',
+      simNoteSimulando: 'Simulando el paso del tiempo…'
+    },
+    ca: {
+      homeLink: '← Inici',
+      headerTitle: 'Quant costa<br>aquesta reunió?',
+      headerDesc: 'Defineix perfils amb el seu brut/any, afegeix els assistents pel seu nom, indica durada i retard. Quan ho tinguis llest, prem «Calcula el cost» per veure el resultat.',
+      bannerTag: 'Un altre simulador · MailCalc',
+      bannerTitle: 'Quant costa un fil de correus?',
+      bannerDesc: 'Núm. de correus, destinataris a Per a/CC i paraules per correu — el mateix càlcul, aplicat al correu.',
+      sectionPerfilesLabel: 'Manteniment de perfils',
+      sectionPerfilesHelp: 'El cost/hora es calcula automàticament a partir del brut anual, les càrregues socials i la jornada setmanal (52 setmanes/any).',
+      labelHorasSemana: 'Hores setmanals',
+      unitHSemana: 'h/setmana',
+      labelCargas: 'Càrregues socials (sobre el brut)',
+      colPerfil: 'Perfil',
+      colBrutoAnyo: 'Brut/any',
+      colEurH: '€/h',
+      btnAddPerfil: '+ Afegeix perfil',
+      sectionAsistentesLabel: 'Assistents a la reunió',
+      sectionAsistentesHelp: 'Assigna un perfil a cada persona, o tria «Personalitzat» per introduir el seu brut/any directament.',
+      colNombre: 'Nom',
+      btnAddAsistente: '+ Afegeix assistent',
+      sectionTiempoLabel: 'Temps',
+      labelDuracion: 'Durada prevista',
+      unitMinutos: 'minuts',
+      labelRetraso: 'Retard en començar',
+      sectionModalidadLabel: 'Modalitat',
+      btnRemota: 'Remota',
+      btnPresencial: 'Presencial',
+      labelCosteSala: 'Cost de la sala / recursos',
+      meterLbl: 'Cost total estimat',
+      statusReposo: 'en repòs',
+      meterSubSuffix: 'per minut de reunió',
+      staleNoteText: 'Hi ha canvis sense calcular ⓘ',
+      btnCalcular: 'Calcula el cost',
+      btnSimular: '▶ Simula en temps real',
+      simNoteDefault: 'L\u2019animació comprimeix la reunió completa en uns segons',
+      footerText: 'v0.3 — cost/hora = brut/any × (1 + càrregues socials) ÷ (hores setmanals × 52). Cost total = Σ(cost/h de cada assistent) × (durada + retard) + sala.',
+      delPerfilTitle: 'Elimina el perfil',
+      delAsistenteTitle: 'Elimina l\u2019assistent',
+      optPersonalizado: 'Personalitzat…',
+      placeholderNombre: 'Nom',
+      placeholderBrutoAnual: 'Brut anual',
+      unitEurAnyo: '€/any',
+      personaSing: 'persona',
+      personaPlur: 'persones',
+      newPerfilName: 'Nou perfil',
+      grupoPersonalizado: 'Personalitzat',
+      grupoSinPerfil: 'Sense perfil',
+      bdRetrasoLabel: '— dels quals, retard',
+      bdSalaLabel: 'Sala / recursos',
+      statusEnCurso: 'reunió en curs',
+      statusTerminada: 'reunió acabada',
+      simNoteSimulando: 'Simulant el pas del temps…'
+    }
+  };
+
+  let currentLang = 'es';
+  const t = key => (I18N[currentLang] && I18N[currentLang][key]) || key;
+
+  function getLangFromURL(){
+    const p = new URLSearchParams(location.search).get('lang');
+    return (p === 'ca') ? 'ca' : 'es';
+  }
+
+  function applyStaticI18n(){
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      el.innerHTML = t(el.getAttribute('data-i18n-html'));
+    });
+    const esBtn = $('btnLangEs'), caBtn = $('btnLangCa');
+    if (esBtn) esBtn.classList.toggle('active', currentLang === 'es');
+    if (caBtn) caBtn.classList.toggle('active', currentLang === 'ca');
+    document.querySelectorAll('a[href$=".html"]').forEach(a => {
+      const base = a.getAttribute('href').split('?')[0];
+      a.setAttribute('href', base + '?lang=' + currentLang);
+    });
+    document.documentElement.lang = currentLang;
+  }
+
+  function setLang(lang){
+    currentLang = lang;
+    history.replaceState(null, '', location.pathname + '?lang=' + lang);
+    applyStaticI18n();
+    renderPerfiles();
+    renderAsistentes();
+    calcular();
+  }
+
+  const fmt = n => n.toLocaleString(currentLang === 'ca' ? 'ca-ES' : 'es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
   let uidCounter = 0;
   const uid = () => 'id' + (uidCounter++);
 
@@ -720,7 +907,7 @@
         <input type="text" value="${p.nombre}" data-role="nombre" data-id="${p.id}">
         <input type="number" class="input-importe" step="1" min="0" value="${p.bruto}" data-role="bruto" data-id="${p.id}">
         <span class="perfil-rate">${fmt(rateHora)} €</span>
-        <button class="row-del" data-role="del" data-id="${p.id}" title="Eliminar perfil">×</button>
+        <button class="row-del" data-role="del" data-id="${p.id}" title="${t('delPerfilTitle')}">×</button>
       `;
       cont.appendChild(row);
     });
@@ -743,7 +930,7 @@
   }
 
   $('addPerfil').addEventListener('click', () => {
-    perfiles.push({ id: uid(), nombre: 'Nuevo perfil', bruto: 30000 });
+    perfiles.push({ id: uid(), nombre: t('newPerfilName'), bruto: 30000 });
     renderPerfiles(); renderAsistentes(); marcarPendiente();
   });
 
@@ -757,16 +944,16 @@
       row.className = 'asistente-row';
 
       let opciones = perfiles.map(p => `<option value="${p.id}" ${(!a.personalizado && a.perfilId===p.id) ? 'selected' : ''}>${p.nombre}</option>`).join('');
-      opciones += `<option value="personalizado" ${a.personalizado ? 'selected' : ''}>Personalizado…</option>`;
+      opciones += `<option value="personalizado" ${a.personalizado ? 'selected' : ''}>${t('optPersonalizado')}</option>`;
 
       row.innerHTML = `
-        <input type="text" placeholder="Nombre" value="${a.nombre}" data-role="nombre" data-id="${a.id}">
+        <input type="text" placeholder="${t('placeholderNombre')}" value="${a.nombre}" data-role="nombre" data-id="${a.id}">
         <select data-role="perfil" data-id="${a.id}">${opciones}</select>
         <span class="perfil-rate">${fmt(rateHora)} €</span>
-        <button class="row-del" data-role="del" data-id="${a.id}" title="Eliminar asistente">×</button>
+        <button class="row-del" data-role="del" data-id="${a.id}" title="${t('delAsistenteTitle')}">×</button>
         <div class="custom-bruto ${a.personalizado ? 'show' : ''}" data-id="${a.id}">
-          <input type="number" class="input-importe" step="1" min="0" value="${a.brutoPropio || ''}" placeholder="Bruto anual" data-role="brutoPropio" data-id="${a.id}">
-          <span>€/año</span>
+          <input type="number" class="input-importe" step="1" min="0" value="${a.brutoPropio || ''}" placeholder="${t('placeholderBrutoAnual')}" data-role="brutoPropio" data-id="${a.id}">
+          <span>${t('unitEurAnyo')}</span>
         </div>
       `;
       cont.appendChild(row);
@@ -797,7 +984,7 @@
       renderAsistentes(); marcarPendiente();
     }));
 
-    $('totalAsistentes').textContent = asistentes.length + (asistentes.length === 1 ? ' persona' : ' personas');
+    $('totalAsistentes').textContent = asistentes.length + ' ' + (asistentes.length === 1 ? t('personaSing') : t('personaPlur'));
   }
 
   $('addAsistente').addEventListener('click', () => {
@@ -860,7 +1047,7 @@
     asistentes.forEach(a => {
       const rate = costeHoraAsistente(a);
       costeHoraCombinado += rate;
-      const clave = a.personalizado ? 'Personalizado' : (perfiles.find(p => p.id === a.perfilId)?.nombre || 'Sin perfil');
+      const clave = a.personalizado ? t('grupoPersonalizado') : (perfiles.find(p => p.id === a.perfilId)?.nombre || t('grupoSinPerfil'));
       grupos[clave] = (grupos[clave] || 0) + rate;
     });
 
@@ -883,12 +1070,12 @@
     });
     const rowRetraso = document.createElement('div');
     rowRetraso.className = 'bd-row alarm';
-    rowRetraso.innerHTML = `<span class="k">— de los cuales, retraso</span><span class="v">${fmt(costeRetraso)} €</span>`;
+    rowRetraso.innerHTML = `<span class="k">${t('bdRetrasoLabel')}</span><span class="v">${fmt(costeRetraso)} €</span>`;
     bd.appendChild(rowRetraso);
     if (modo === 'presencial'){
       const rowSala = document.createElement('div');
       rowSala.className = 'bd-row';
-      rowSala.innerHTML = `<span class="k">Sala / recursos</span><span class="v">${fmt(costeSalaTotal)} €</span>`;
+      rowSala.innerHTML = `<span class="k">${t('bdSalaLabel')}</span><span class="v">${fmt(costeSalaTotal)} €</span>`;
       bd.appendChild(rowSala);
     }
 
@@ -905,25 +1092,25 @@
     if (simRunning) return;
     simRunning = true;
     $('simBtn').disabled = true;
-    $('statusLabel').textContent = 'reunión en curso';
+    $('statusLabel').textContent = t('statusEnCurso');
     $('statusLabel').style.color = 'var(--accent-alarm)';
-    $('simNote').textContent = 'Simulando el paso del tiempo…';
+    $('simNote').textContent = t('simNoteSimulando');
 
     const target = ultimoTotal;
     const durationMs = 6000;
     const start = performance.now();
 
     function frame(now){
-      const t = Math.min(1, (now - start) / durationMs);
-      const eased = t < 0.15 ? t*0.4 : 0.06 + (t-0.15)/0.85*0.94;
+      const t2 = Math.min(1, (now - start) / durationMs);
+      const eased = t2 < 0.15 ? t2*0.4 : 0.06 + (t2-0.15)/0.85*0.94;
       $('meterValue').textContent = fmt(target * Math.min(1, eased));
-      if (t < 1){
+      if (t2 < 1){
         requestAnimationFrame(frame);
       } else {
         $('meterValue').textContent = fmt(target);
-        $('statusLabel').textContent = 'reunión terminada';
+        $('statusLabel').textContent = t('statusTerminada');
         $('statusLabel').style.color = 'var(--accent-gold)';
-        $('simNote').textContent = 'La animación comprime la reunión completa en unos segundos';
+        $('simNote').textContent = t('simNoteDefault');
         $('simBtn').disabled = false;
         simRunning = false;
       }
@@ -931,7 +1118,13 @@
     requestAnimationFrame(frame);
   });
 
+  // ---------- SELECTOR DE IDIOMA ----------
+  $('btnLangEs').addEventListener('click', () => setLang('es'));
+  $('btnLangCa').addEventListener('click', () => setLang('ca'));
+
   // ---------- INICIO ----------
+  currentLang = getLangFromURL();
+  applyStaticI18n();
   renderPerfiles();
   renderAsistentes();
   setModo('remota', true);

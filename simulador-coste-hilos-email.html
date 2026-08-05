@@ -5,55 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MailCalc — El coste de un hilo de emails</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper: #EEF0E2;
-    --paper-line: #CBD1B8;
-    --surface: #FBFAF3;
-    --ink: #22301F;
-    --ink-soft: #5B6555;
-    --accent-alarm: #A23E2A;
-    --accent-alarm-soft: #A23E2A22;
-    --accent-gold: #A9812E;
-    --accent-gold-soft: #A9812E1c;
-    --ok: #3D6B4A;
-    --radius: 4px;
+    --navy: #00205B;
+    --blue: #00338D;
+    --sky: #0091DA;
+    --ink: #0B1F33;
+    --ink-soft: #56626F;
+    --border: #DEE3E8;
+    --surface: #F4F6F8;
+    --white: #FFFFFF;
+    --accent: #E4002B;
+    --accent-soft: #E4002B14;
+    --ok: #0A7A45;
+    --radius: 2px;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background:
-      repeating-linear-gradient(180deg, transparent, transparent 27px, var(--paper-line) 28px),
-      var(--paper);
+    background:var(--white);
     color:var(--ink);
-    font-family:'IBM Plex Sans', sans-serif;
+    font-family:'Inter', sans-serif;
     padding:0 0 80px 0;
   }
   a{color:inherit;}
-  button{font-family:'IBM Plex Sans', sans-serif;}
+  button{font-family:'Inter', sans-serif;}
 
   /* ---------- TOPBAR ---------- */
   .topbar{
     max-width:1100px;
     margin:0 auto;
-    padding:26px 24px 0;
+    padding:18px 24px;
     display:flex;
     align-items:center;
     justify-content:space-between;
+    border-bottom:1px solid var(--border);
+    margin-bottom:40px;
   }
   .topbar .mark{
-    font-family:'IBM Plex Mono', monospace;
-    font-weight:700;
-    font-size:14px;
-    letter-spacing:.04em;
-    border:1px solid var(--ink);
-    padding:4px 8px;
-    border-radius:3px;
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-size:17px;
+    letter-spacing:-0.01em;
+    border:none;
+    padding:0;
+    border-radius:0;
     text-decoration:none;
-    color:var(--ink);
+    color:var(--navy);
   }
-  .topbar .mark span{color:var(--accent-alarm);}
+  .topbar .mark span{color:var(--accent);}
   .topbar .home-link{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
@@ -63,38 +64,62 @@
     align-items:center;
     gap:6px;
   }
-  .topbar .home-link:hover{color:var(--accent-gold);}
+  .topbar .home-link:hover{color:var(--blue);}
+  .lang-switch{
+    display:flex;
+    border:1px solid var(--border);
+    border-radius:0;
+    overflow:hidden;
+    background:var(--white);
+  }
+  .lang-switch button{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.04em;
+    padding:6px 13px;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .lang-switch button + button{border-left:1px solid var(--border);}
+  .lang-switch button.active{
+    background:var(--navy);
+    color:var(--white);
+  }
 
   /* ---------- HEADER ---------- */
   header{
-    padding:52px 24px 34px;
+    padding:0 24px 34px;
     max-width:1100px;
     margin:0 auto;
-    border-bottom:2px solid var(--ink);
+    border-bottom:1px solid var(--border);
   }
   .eyebrow{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
-    letter-spacing:.16em;
+    font-weight:600;
+    letter-spacing:.14em;
     text-transform:uppercase;
-    color:var(--accent-alarm);
+    color:var(--sky);
     display:flex;
     align-items:center;
     gap:10px;
   }
   .eyebrow::before{
     content:"";
-    width:8px;height:8px;border-radius:50%;
-    background:var(--accent-alarm);
-    box-shadow:0 0 0 3px var(--accent-alarm-soft);
+    width:7px;height:7px;
+    background:var(--accent);
   }
   h1{
-    font-family:'IBM Plex Slab', serif;
-    font-weight:700;
-    font-size:clamp(34px, 5vw, 56px);
-    line-height:1.02;
-    margin:14px 0 12px;
-    letter-spacing:-0.01em;
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-size:clamp(32px, 4.6vw, 48px);
+    line-height:1.05;
+    margin:16px 0 14px;
+    letter-spacing:-0.02em;
+    color:var(--navy);
   }
   header p{
     font-size:16px;
@@ -116,20 +141,20 @@
     gap:16px;
     text-decoration:none;
     background:var(--surface);
-    border:1px solid var(--paper-line);
-    border-left:4px solid var(--accent-gold);
-    border-radius:var(--radius);
+    border:1px solid var(--border);
+    border-left:3px solid var(--sky);
+    border-radius:0;
     padding:16px 20px;
     transition:border-color .15s ease, background .15s ease;
   }
   .sim-banner a:hover{
-    border-left-color:var(--accent-alarm);
-    background:#fff;
+    border-left-color:var(--accent);
+    background:var(--white);
   }
   .sim-banner .icon{
     font-family:'IBM Plex Mono', monospace;
     font-size:20px;
-    color:var(--accent-gold);
+    color:var(--blue);
     flex-shrink:0;
   }
   .sim-banner .txt{flex:1;}
@@ -138,15 +163,16 @@
     font-size:10.5px;
     letter-spacing:.12em;
     text-transform:uppercase;
-    color:var(--accent-gold);
+    color:var(--sky);
     display:block;
     margin-bottom:3px;
+    font-weight:700;
   }
   .sim-banner .txt .title{
-    font-family:'IBM Plex Slab', serif;
-    font-weight:600;
+    font-family:'Inter', sans-serif;
+    font-weight:700;
     font-size:17px;
-    color:var(--ink);
+    color:var(--navy);
   }
   .sim-banner .txt .desc{
     font-size:13px;
@@ -167,8 +193,10 @@
     padding:40px 24px 0;
     display:grid;
     grid-template-columns: 1.15fr 0.85fr;
-    gap:28px;
-    align-items:start;
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    align-items:stretch;
   }
   @media (max-width: 860px){
     .wrap{grid-template-columns:1fr;}
@@ -176,28 +204,29 @@
 
   /* ---------- LEDGER (form) ---------- */
   .ledger{
-    background:var(--surface);
-    border:1px solid var(--paper-line);
-    border-radius:var(--radius);
+    background:var(--white);
+    border:none;
+    border-radius:0;
     padding:6px 0;
   }
   .ledger-section{
-    padding:22px 26px;
-    border-bottom:1px solid var(--paper-line);
+    padding:26px 28px;
+    border-bottom:1px solid var(--border);
   }
   .ledger-section:last-child{border-bottom:none;}
   .section-label{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
-    letter-spacing:.14em;
+    font-weight:700;
+    letter-spacing:.12em;
     text-transform:uppercase;
-    color:var(--accent-gold);
+    color:var(--blue);
     margin:0 0 6px;
     display:flex;
     justify-content:space-between;
     align-items:center;
   }
-  .section-label span.n{color:var(--ink-soft); text-transform:none; letter-spacing:0;}
+  .section-label span.n{color:var(--ink-soft); text-transform:none; letter-spacing:0; font-weight:500;}
   .section-help{
     font-size:12.5px;
     color:var(--ink-soft);
@@ -211,7 +240,7 @@
     gap:14px;
     margin-bottom:18px;
     padding-bottom:18px;
-    border-bottom:1px dashed var(--paper-line);
+    border-bottom:1px dashed var(--border);
   }
   .field{
     display:flex;
@@ -221,6 +250,7 @@
   .field label{
     font-size:12.5px;
     color:var(--ink-soft);
+    font-weight:500;
   }
   .unit-wrap{
     display:flex;
@@ -233,10 +263,10 @@
     font-size:12px;
     color:var(--ink-soft);
     white-space:nowrap;
-    background:var(--paper);
-    border:1px solid var(--paper-line);
+    background:var(--surface);
+    border:1px solid var(--border);
     padding:8px 10px;
-    border-radius:3px;
+    border-radius:0;
   }
 
   input[type=number], input[type=text]{
@@ -244,14 +274,15 @@
     font-family:'IBM Plex Mono', monospace;
     font-size:14px;
     font-weight:600;
-    padding:8px 9px;
-    border:1px solid var(--paper-line);
-    border-radius:3px;
-    background:#fff;
+    padding:9px 10px;
+    border:1px solid var(--border);
+    border-radius:0;
+    background:var(--white);
     color:var(--ink);
   }
   input[type=number]{text-align:right;}
-  input[type=text]{font-family:'IBM Plex Sans'; font-weight:500; text-align:left;}
+  input[type=text]{font-family:'Inter', sans-serif; font-weight:500; text-align:left;}
+  input:focus, select:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,51,141,0.12);}
 
   input.input-importe::-webkit-outer-spin-button,
   input.input-importe::-webkit-inner-spin-button{
@@ -265,16 +296,15 @@
 
   select{
     width:100%;
-    font-family:'IBM Plex Sans';
+    font-family:'Inter', sans-serif;
     font-size:13.5px;
     font-weight:500;
-    padding:8px 9px;
-    border:1px solid var(--paper-line);
-    border-radius:3px;
-    background:#fff;
+    padding:9px 10px;
+    border:1px solid var(--border);
+    border-radius:0;
+    background:var(--white);
     color:var(--ink);
   }
-  input:focus, select:focus{outline:2px solid var(--accent-gold); outline-offset:1px;}
 
   /* perfil rows */
   .perfil-row{
@@ -287,31 +317,32 @@
   .perfil-rate{
     font-family:'IBM Plex Mono', monospace;
     font-size:13px;
-    font-weight:600;
+    font-weight:700;
     color:var(--ok);
     text-align:right;
     white-space:nowrap;
   }
   .row-del{
-    width:26px; height:26px;
-    border:1px solid var(--paper-line);
-    background:#fff;
-    border-radius:3px;
-    color:var(--accent-alarm);
+    width:28px; height:28px;
+    border:1px solid var(--border);
+    background:var(--white);
+    border-radius:0;
+    color:var(--accent);
     cursor:pointer;
     font-size:14px;
     line-height:1;
     display:flex; align-items:center; justify-content:center;
   }
-  .row-del:hover{background:var(--accent-alarm-soft);}
+  .row-del:hover{background:var(--accent-soft); border-color:var(--accent);}
   .col-headers{
     display:grid;
     grid-template-columns: 1fr 110px 90px 26px;
     gap:8px;
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
+    font-weight:600;
     text-transform:uppercase;
-    letter-spacing:.08em;
+    letter-spacing:.06em;
     color:var(--ink-soft);
     margin-bottom:8px;
   }
@@ -325,12 +356,12 @@
     align-items:center;
     margin-bottom:10px;
     padding:4px 6px;
-    border-radius:3px;
+    border-radius:0;
     border-left:3px solid transparent;
   }
   .part-row.pending-profile{
-    border-left-color:var(--accent-gold);
-    background:var(--accent-gold-soft);
+    border-left-color:#FFC24B;
+    background:#FFF7E8;
   }
   .part-row .custom-bruto{
     grid-column: 1 / 3;
@@ -351,8 +382,9 @@
     gap:8px;
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
+    font-weight:600;
     text-transform:uppercase;
-    letter-spacing:.08em;
+    letter-spacing:.06em;
     color:var(--ink-soft);
     margin-bottom:8px;
   }
@@ -376,6 +408,7 @@
     font-family:'IBM Plex Mono', monospace;
     font-size:12.5px;
     color:var(--ink-soft);
+    font-weight:600;
   }
   .email-col-headers{
     display:grid;
@@ -383,8 +416,9 @@
     gap:8px;
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
+    font-weight:600;
     text-transform:uppercase;
-    letter-spacing:.08em;
+    letter-spacing:.06em;
     color:var(--ink-soft);
     margin-bottom:8px;
   }
@@ -393,16 +427,16 @@
   .add-btn{
     width:100%;
     margin-top:4px;
-    padding:9px;
-    border:1px dashed var(--paper-line);
+    padding:10px;
+    border:1px dashed var(--border);
     background:transparent;
-    border-radius:3px;
+    border-radius:0;
     color:var(--ink-soft);
     font-size:13px;
-    font-weight:500;
+    font-weight:600;
     cursor:pointer;
   }
-  .add-btn:hover{border-color:var(--accent-gold); color:var(--accent-gold);}
+  .add-btn:hover{border-color:var(--blue); border-style:solid; color:var(--blue);}
 
   /* importar hilo */
   #pegaHilo{
@@ -414,13 +448,13 @@
     font-weight:500;
     line-height:1.5;
     padding:12px;
-    border:1px solid var(--paper-line);
-    border-radius:3px;
-    background:#fff;
+    border:1px solid var(--border);
+    border-radius:0;
+    background:var(--white);
     color:var(--ink);
     margin-bottom:12px;
   }
-  #pegaHilo:focus{outline:2px solid var(--accent-gold); outline-offset:1px;}
+  #pegaHilo:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,51,141,0.12);}
   .import-actions{
     display:flex;
     gap:10px;
@@ -433,7 +467,7 @@
     color:var(--ink-soft);
   }
   .import-result.ok{color:var(--ok);}
-  .import-result.warn{color:var(--accent-alarm);}
+  .import-result.warn{color:var(--accent);}
 
   .field-row{
     display:grid;
@@ -445,14 +479,14 @@
   .meter-panel{
     position:sticky;
     top:24px;
-    background:var(--ink);
-    color:var(--paper);
-    border-radius:var(--radius);
+    background:var(--navy);
+    color:var(--white);
+    border-radius:0;
     overflow:hidden;
-    border:1px solid var(--ink);
+    border:none;
   }
   .meter-head{
-    padding:20px 24px 0;
+    padding:22px 26px 0;
     display:flex;
     justify-content:space-between;
     align-items:baseline;
@@ -460,45 +494,46 @@
   .meter-head .lbl{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
-    letter-spacing:.14em;
+    font-weight:600;
+    letter-spacing:.12em;
     text-transform:uppercase;
-    color:#C7CDB7;
+    color:#8FA9CC;
   }
   .meter-head .status{
     font-family:'IBM Plex Mono', monospace;
     font-size:11px;
-    color:var(--accent-gold);
+    color:var(--sky);
   }
   .meter-display{
-    padding:14px 24px 6px;
+    padding:16px 26px 6px;
     text-align:left;
   }
   .meter-number{
-    font-family:'IBM Plex Mono', monospace;
-    font-weight:700;
-    font-size:clamp(40px, 6vw, 58px);
-    letter-spacing:-0.01em;
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-size:clamp(40px, 6vw, 56px);
+    letter-spacing:-0.02em;
     line-height:1;
     display:flex;
     align-items:baseline;
     gap:6px;
   }
-  .meter-number .sym{font-size:0.5em; color:var(--accent-gold); font-weight:600;}
+  .meter-number .sym{font-size:0.5em; color:var(--sky); font-weight:700;}
   .meter-sub{
     font-size:12.5px;
-    color:#C7CDB7;
-    margin-top:8px;
+    color:#96A9C4;
+    margin-top:10px;
   }
-  .meter-sub b{color:var(--paper); font-weight:600;}
+  .meter-sub b{color:var(--white); font-weight:700;}
 
   .rule{
     height:1px;
-    background:#3A4736;
-    margin:18px 24px 0;
+    background:#25407A;
+    margin:20px 26px 0;
   }
 
   .breakdown{
-    padding:18px 24px 4px;
+    padding:18px 26px 4px;
     max-height:320px;
     overflow-y:auto;
   }
@@ -506,24 +541,24 @@
     display:flex;
     justify-content:space-between;
     font-size:13.5px;
-    padding:8px 0;
-    border-bottom:1px dashed #3A4736;
+    padding:9px 0;
+    border-bottom:1px solid #1A3868;
   }
-  .bd-row.alarm{color:var(--accent-alarm);}
-  .bd-row .k{color:#C7CDB7;}
-  .bd-row .v{font-family:'IBM Plex Mono', monospace; font-weight:600; color:var(--paper);}
-  .bd-row.alarm .v{color:var(--accent-alarm);}
+  .bd-row.alarm{color:#FF8A80;}
+  .bd-row .k{color:#96A9C4;}
+  .bd-row .v{font-family:'IBM Plex Mono', monospace; font-weight:700; color:var(--white);}
+  .bd-row.alarm .v{color:#FF8A80;}
 
   .meter-cta{
-    padding:20px 24px 24px;
+    padding:22px 26px 26px;
   }
   .calc-btn{
     width:100%;
     padding:14px;
-    background:var(--accent-gold);
-    color:var(--ink);
+    background:var(--sky);
+    color:var(--navy);
     border:none;
-    border-radius:3px;
+    border-radius:0;
     font-weight:700;
     font-size:14.5px;
     cursor:pointer;
@@ -532,7 +567,7 @@
   .calc-btn:hover{filter:brightness(1.08);}
   .stale-note{
     font-size:11.5px;
-    color:var(--accent-gold);
+    color:#FFC24B;
     text-align:center;
     margin:0 0 10px;
     display:none;
@@ -542,7 +577,8 @@
   footer{
     max-width:1100px;
     margin:40px auto 0;
-    padding:0 24px;
+    padding:20px 24px 0;
+    border-top:1px solid var(--border);
     font-size:12px;
     color:var(--ink-soft);
     font-family:'IBM Plex Mono', monospace;
@@ -553,23 +589,29 @@
 
 <div class="topbar">
   <a href="index.html" class="mark">Mail<span>Calc</span></a>
-  <a href="index.html" class="home-link">← Inicio</a>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <a href="index.html" class="home-link" data-i18n="homeLink">← Inicio</a>
+    <div class="lang-switch">
+      <button data-lang="es" id="btnLangEs">ES</button>
+      <button data-lang="ca" id="btnLangCa">CA</button>
+    </div>
+  </div>
 </div>
 
 
 <header>
   <div class="eyebrow">Simulador · v0</div>
-  <h1>¿Cuánto cuesta<br>este hilo de emails?</h1>
-  <p>Define quién está en el hilo (Para / CC) y cuántas palabras tiene cada email. Cuando lo tengas listo, pulsa «Calcular coste» para ver el resultado.</p>
+  <h1 data-i18n-html="headerTitle">¿Cuánto cuesta<br>este hilo de emails?</h1>
+  <p data-i18n="headerDesc">Define quién está en el hilo (Para / CC) y cuántas palabras tiene cada email. Cuando lo tengas listo, pulsa «Calcular coste» para ver el resultado.</p>
 </header>
 
 <div class="sim-banner">
   <a href="simulador-coste-reuniones.html">
     <span class="icon">◷</span>
     <span class="txt">
-      <span class="tag">Otro simulador · MeetCalc</span>
-      <span class="title">¿Cuánto cuesta esta reunión?</span>
-      <span class="desc">Asistentes, duración y retraso — el mismo cálculo, aplicado a las reuniones.</span>
+      <span class="tag" data-i18n="bannerTag">Otro simulador · MeetCalc</span>
+      <span class="title" data-i18n="bannerTitle">¿Cuánto cuesta esta reunión?</span>
+      <span class="desc" data-i18n="bannerDesc">Asistentes, duración y retraso — el mismo cálculo, aplicado a las reuniones.</span>
     </span>
     <span class="arrow">→</span>
   </a>
@@ -582,19 +624,19 @@
 
     <!-- MANTENIMIENTO DE PERFILES -->
     <div class="ledger-section">
-      <div class="section-label">Mantenimiento de perfiles</div>
-      <p class="section-help">El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y la jornada semanal (52 semanas/año).</p>
+      <div class="section-label" data-i18n="sectionPerfilesLabel">Mantenimiento de perfiles</div>
+      <p class="section-help" data-i18n="sectionPerfilesHelp">El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y la jornada semanal (52 semanas/año).</p>
 
       <div class="config-row">
         <div class="field">
-          <label>Horas semanales</label>
+          <label data-i18n="labelHorasSemana">Horas semanales</label>
           <div class="unit-wrap">
             <input type="number" min="1" value="40" id="horasSemana">
-            <span class="unit-tag">h/semana</span>
+            <span class="unit-tag" data-i18n="unitHSemana">h/semana</span>
           </div>
         </div>
         <div class="field">
-          <label>Cargas sociales (sobre bruto)</label>
+          <label data-i18n="labelCargas">Cargas sociales (sobre bruto)</label>
           <div class="unit-wrap">
             <input type="number" min="0" value="32" id="cargasPct">
             <span class="unit-tag">%</span>
@@ -603,56 +645,56 @@
       </div>
 
       <div class="col-headers">
-        <span>Perfil</span>
-        <span>Bruto/año</span>
-        <span>€/h</span>
+        <span data-i18n="colPerfil">Perfil</span>
+        <span data-i18n="colBrutoAnyo">Bruto/año</span>
+        <span data-i18n="colEurH">€/h</span>
         <span></span>
       </div>
       <div id="perfilesList"></div>
-      <button class="add-btn" id="addPerfil">+ Añadir perfil</button>
+      <button class="add-btn" id="addPerfil" data-i18n="btnAddPerfil">+ Añadir perfil</button>
     </div>
 
     <!-- IMPORTAR HILO -->
     <div class="ledger-section">
-      <div class="section-label">Importar cadena de emails</div>
-      <p class="section-help">Copia y pega aquí tu hilo de emails (con cabeceras «De/Para/CC» o «From/To/Cc»). Al detectar, se sustituyen los participantes y emails actuales —incluidos los de ejemplo— por los del hilo pegado; luego solo tendrás que asignarles un perfil.</p>
-      <textarea id="pegaHilo" placeholder="De: Ana García <ana@empresa.com>&#10;Para: Marc Soler <marc@empresa.com>&#10;CC: Laia Puig <laia@empresa.com>&#10;Asunto: Propuesta Q3&#10;&#10;Hola a todos, os adjunto la propuesta...&#10;&#10;El 3 de agosto, Marc Soler escribió:&#10;Gracias Ana, un par de comentarios..."></textarea>
+      <div class="section-label" data-i18n="sectionImportLabel">Importar cadena de emails</div>
+      <p class="section-help" data-i18n="sectionImportHelp">Copia y pega aquí tu hilo de emails (con cabeceras «De/Para/CC» o «From/To/Cc»). Al detectar, se sustituyen los participantes y emails actuales —incluidos los de ejemplo— por los del hilo pegado; luego solo tendrás que asignarles un perfil.</p>
+      <textarea id="pegaHilo" data-i18n-placeholder="pegaHiloPlaceholder" placeholder="De: Ana García <ana@empresa.com>&#10;Para: Marc Soler <marc@empresa.com>&#10;CC: Laia Puig <laia@empresa.com>&#10;Asunto: Propuesta Q3&#10;&#10;Hola a todos, os adjunto la propuesta...&#10;&#10;El 3 de agosto, Marc Soler escribió:&#10;Gracias Ana, un par de comentarios..."></textarea>
       <div class="import-actions">
-        <button class="calc-btn" id="importBtn" style="margin-bottom:0;">Detectar participantes y emails</button>
-        <button class="add-btn" id="clearImport" style="width:auto; padding:11px 16px;">Limpiar</button>
+        <button class="calc-btn" id="importBtn" style="margin-bottom:0;" data-i18n="btnImport">Detectar participantes y emails</button>
+        <button class="add-btn" id="clearImport" style="width:auto; padding:11px 16px;" data-i18n="btnClearImport">Limpiar</button>
       </div>
       <div class="import-result" id="importResult"></div>
     </div>
 
     <!-- PARTICIPANTES DEL HILO -->
     <div class="ledger-section">
-      <div class="section-label">Participantes del hilo <span class="n" id="totalParticipantes">0 personas</span></div>
-      <p class="section-help">Cada persona cuenta durante todo el hilo. En CC se aplica un factor de atención reducido (lo defines más abajo). Las filas en ámbar necesitan que les asignes un perfil.</p>
+      <div class="section-label"><span data-i18n="sectionParticipantesLabel">Participantes del hilo</span> <span class="n" id="totalParticipantes">0 personas</span></div>
+      <p class="section-help" data-i18n="sectionParticipantesHelp">Cada persona cuenta durante todo el hilo. En CC se aplica un factor de atención reducido (lo defines más abajo). Las filas en ámbar necesitan que les asignes un perfil.</p>
 
       <div class="part-col-headers">
-        <span>Nombre</span>
-        <span>Perfil</span>
-        <span>Para/CC</span>
-        <span>€/h</span>
+        <span data-i18n="colNombre">Nombre</span>
+        <span data-i18n="colPerfil">Perfil</span>
+        <span data-i18n="colParaCC">Para/CC</span>
+        <span data-i18n="colEurH">€/h</span>
         <span></span>
       </div>
       <div id="participantesList"></div>
-      <button class="add-btn" id="addParticipante">+ Añadir participante</button>
+      <button class="add-btn" id="addParticipante" data-i18n="btnAddParticipante">+ Añadir participante</button>
     </div>
 
     <!-- LECTURA -->
     <div class="ledger-section">
-      <div class="section-label">Parámetros de lectura</div>
+      <div class="section-label" data-i18n="sectionLecturaLabel">Parámetros de lectura</div>
       <div class="field-row">
         <div class="field">
-          <label>Velocidad de lectura</label>
+          <label data-i18n="labelVelocidad">Velocidad de lectura</label>
           <div class="unit-wrap">
             <input type="number" min="1" value="200" id="velocidadLectura">
-            <span class="unit-tag">palabras/min</span>
+            <span class="unit-tag" data-i18n="unitPalabrasMin">palabras/min</span>
           </div>
         </div>
         <div class="field">
-          <label>Atención en CC</label>
+          <label data-i18n="labelAtencionCC">Atención en CC</label>
           <div class="unit-wrap">
             <input type="number" min="0" max="100" value="40" id="factorCC">
             <span class="unit-tag">%</span>
@@ -663,16 +705,16 @@
 
     <!-- EMAILS DEL HILO -->
     <div class="ledger-section">
-      <div class="section-label">Emails del hilo <span class="n" id="totalEmails">0 emails</span></div>
-      <p class="section-help">Añade una fila por cada email del hilo e indica cuántas palabras tiene.</p>
+      <div class="section-label"><span data-i18n="sectionEmailsLabel">Emails del hilo</span> <span class="n" id="totalEmails">0 emails</span></div>
+      <p class="section-help" data-i18n="sectionEmailsHelp">Añade una fila por cada email del hilo e indica cuántas palabras tiene.</p>
 
       <div class="email-col-headers">
-        <span>Email</span>
-        <span>Palabras</span>
+        <span data-i18n="colEmail">Email</span>
+        <span data-i18n="colPalabras">Palabras</span>
         <span></span>
       </div>
       <div id="emailsList"></div>
-      <button class="add-btn" id="addEmail">+ Añadir email</button>
+      <button class="add-btn" id="addEmail" data-i18n="btnAddEmail">+ Añadir email</button>
     </div>
 
   </div>
@@ -680,12 +722,12 @@
   <!-- METER -->
   <div class="meter-panel">
     <div class="meter-head">
-      <span class="lbl">Coste total del hilo</span>
-      <span class="status" id="statusLabel">sin calcular</span>
+      <span class="lbl" data-i18n="meterLbl">Coste total del hilo</span>
+      <span class="status" id="statusLabel" data-i18n="statusSinCalcular">sin calcular</span>
     </div>
     <div class="meter-display">
       <div class="meter-number"><span class="sym">€</span><span id="meterValue">0,00</span></div>
-      <div class="meter-sub"><b id="costePorEmail">0,00 €</b> de media por email</div>
+      <div class="meter-sub"><b id="costePorEmail">0,00 €</b> <span data-i18n="meterSubSuffix">de media por email</span></div>
     </div>
 
     <div class="rule"></div>
@@ -695,18 +737,193 @@
     </div>
 
     <div class="meter-cta">
-      <div class="stale-note" id="staleNote">Hay cambios sin calcular ⓘ</div>
-      <button class="calc-btn" id="calcBtn">Calcular coste</button>
+      <div class="stale-note" id="staleNote" data-i18n="staleNoteText">Hay cambios sin calcular ⓘ</div>
+      <button class="calc-btn" id="calcBtn" data-i18n="btnCalcular">Calcular coste</button>
     </div>
   </div>
 
 </div>
 
-<footer>v0 — coste/hora = bruto/año × (1 + cargas sociales) ÷ (horas semanales × 52). Coste email = (palabras ÷ velocidad lectura) × (Σ €/h en Para + Σ €/h en CC × atención CC).</footer>
+<footer data-i18n="footerText">v0 — coste/hora = bruto/año × (1 + cargas sociales) ÷ (horas semanales × 52). Coste email = (palabras ÷ velocidad lectura) × (Σ €/h en Para + Σ €/h en CC × atención CC).</footer>
 
 <script>
   const $ = id => document.getElementById(id);
-  const fmt = n => n.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  // ---------- IDIOMA ----------
+  const I18N = {
+    es: {
+      homeLink: '← Inicio',
+      headerTitle: '¿Cuánto cuesta<br>este hilo de emails?',
+      headerDesc: 'Define quién está en el hilo (Para / CC) y cuántas palabras tiene cada email. Cuando lo tengas listo, pulsa «Calcular coste» para ver el resultado.',
+      bannerTag: 'Otro simulador · MeetCalc',
+      bannerTitle: '¿Cuánto cuesta esta reunión?',
+      bannerDesc: 'Asistentes, duración y retraso — el mismo cálculo, aplicado a las reuniones.',
+      sectionPerfilesLabel: 'Mantenimiento de perfiles',
+      sectionPerfilesHelp: 'El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y la jornada semanal (52 semanas/año).',
+      labelHorasSemana: 'Horas semanales',
+      unitHSemana: 'h/semana',
+      labelCargas: 'Cargas sociales (sobre bruto)',
+      colPerfil: 'Perfil',
+      colBrutoAnyo: 'Bruto/año',
+      colEurH: '€/h',
+      btnAddPerfil: '+ Añadir perfil',
+      sectionImportLabel: 'Importar cadena de emails',
+      sectionImportHelp: 'Copia y pega aquí tu hilo de emails (con cabeceras «De/Para/CC» o «From/To/Cc»). Al detectar, se sustituyen los participantes y emails actuales —incluidos los de ejemplo— por los del hilo pegado; luego solo tendrás que asignarles un perfil.',
+      pegaHiloPlaceholder: 'De: Ana García <ana@empresa.com>\nPara: Marc Soler <marc@empresa.com>\nCC: Laia Puig <laia@empresa.com>\nAsunto: Propuesta Q3\n\nHola a todos, os adjunto la propuesta...\n\nEl 3 de agosto, Marc Soler escribió:\nGracias Ana, un par de comentarios...',
+      btnImport: 'Detectar participantes y emails',
+      btnClearImport: 'Limpiar',
+      sectionParticipantesLabel: 'Participantes del hilo',
+      sectionParticipantesHelp: 'Cada persona cuenta durante todo el hilo. En CC se aplica un factor de atención reducido (lo defines más abajo). Las filas en ámbar necesitan que les asignes un perfil.',
+      colNombre: 'Nombre',
+      colParaCC: 'Para/CC',
+      btnAddParticipante: '+ Añadir participante',
+      sectionLecturaLabel: 'Parámetros de lectura',
+      labelVelocidad: 'Velocidad de lectura',
+      unitPalabrasMin: 'palabras/min',
+      labelAtencionCC: 'Atención en CC',
+      sectionEmailsLabel: 'Emails del hilo',
+      sectionEmailsHelp: 'Añade una fila por cada email del hilo e indica cuántas palabras tiene.',
+      colEmail: 'Email',
+      colPalabras: 'Palabras',
+      btnAddEmail: '+ Añadir email',
+      meterLbl: 'Coste total del hilo',
+      statusSinCalcular: 'sin calcular',
+      meterSubSuffix: 'de media por email',
+      staleNoteText: 'Hay cambios sin calcular ⓘ',
+      btnCalcular: 'Calcular coste',
+      footerText: 'v0 — coste/hora = bruto/año × (1 + cargas sociales) ÷ (horas semanales × 52). Coste email = (palabras ÷ velocidad lectura) × (Σ €/h en Para + Σ €/h en CC × atención CC).',
+      delPerfilTitle: 'Eliminar perfil',
+      newPerfilName: 'Nuevo perfil',
+      optPersonalizado: 'Personalizado…',
+      placeholderNombre: 'Nombre',
+      placeholderBrutoAnual: 'Bruto anual',
+      unitEurAnyo: '€/año',
+      optSelectPerfil: '— selecciona perfil —',
+      optPara: 'Para',
+      optCC: 'CC',
+      delParticipanteTitle: 'Eliminar participante',
+      personaSing: 'persona',
+      personaPlur: 'personas',
+      emailWord: 'Email',
+      unitPalabras: 'palabras',
+      delEmailTitle: 'Eliminar email',
+      emailSing: 'email',
+      emailPlur: 'emails',
+      statusPendiente: 'pendiente de calcular',
+      statusCalculado: 'calculado',
+      bdParaLabel: 'Coste en Para',
+      bdCCLabel: 'Coste en CC',
+      importPasteFirst: 'Pega primero el contenido del hilo de emails.',
+      importResultBase: 'Detectados {n} participantes y {m} emails. Se han sustituido los datos de ejemplo.',
+      importResultPending: ' Asigna un perfil a las {p} filas marcadas en ámbar en «Participantes del hilo».'
+    },
+    ca: {
+      homeLink: '← Inici',
+      headerTitle: 'Quant costa<br>aquest fil de correus?',
+      headerDesc: 'Defineix qui és al fil (Per a / CC) i quantes paraules té cada correu. Quan ho tinguis llest, prem «Calcula el cost» per veure el resultat.',
+      bannerTag: 'Un altre simulador · MeetCalc',
+      bannerTitle: 'Quant costa aquesta reunió?',
+      bannerDesc: 'Assistents, durada i retard — el mateix càlcul, aplicat a les reunions.',
+      sectionPerfilesLabel: 'Manteniment de perfils',
+      sectionPerfilesHelp: 'El cost/hora es calcula automàticament a partir del brut anual, les càrregues socials i la jornada setmanal (52 setmanes/any).',
+      labelHorasSemana: 'Hores setmanals',
+      unitHSemana: 'h/setmana',
+      labelCargas: 'Càrregues socials (sobre el brut)',
+      colPerfil: 'Perfil',
+      colBrutoAnyo: 'Brut/any',
+      colEurH: '€/h',
+      btnAddPerfil: '+ Afegeix perfil',
+      sectionImportLabel: 'Importa una cadena de correus',
+      sectionImportHelp: 'Copia i enganxa aquí el teu fil de correus (amb capçaleres «De/Per a/CC» o «From/To/Cc»). En detectar-los, se substitueixen els participants i correus actuals —inclosos els d\u2019exemple— pels del fil enganxat; després només caldrà assignar-los un perfil.',
+      pegaHiloPlaceholder: 'De: Ana García <ana@empresa.com>\nPer a: Marc Soler <marc@empresa.com>\nCC: Laia Puig <laia@empresa.com>\nAssumpte: Proposta Q3\n\nHola a tothom, us adjunto la proposta...\n\nEl 3 d\u2019agost, Marc Soler va escriure:\nGràcies Ana, un parell de comentaris...',
+      btnImport: 'Detecta participants i correus',
+      btnClearImport: 'Neteja',
+      sectionParticipantesLabel: 'Participants del fil',
+      sectionParticipantesHelp: 'Cada persona compta durant tot el fil. A CC s\u2019aplica un factor d\u2019atenció reduït (el defineixes més avall). Les files en ambre necessiten que hi assignis un perfil.',
+      colNombre: 'Nom',
+      colParaCC: 'Per a/CC',
+      btnAddParticipante: '+ Afegeix participant',
+      sectionLecturaLabel: 'Paràmetres de lectura',
+      labelVelocidad: 'Velocitat de lectura',
+      unitPalabrasMin: 'paraules/min',
+      labelAtencionCC: 'Atenció en CC',
+      sectionEmailsLabel: 'Correus del fil',
+      sectionEmailsHelp: 'Afegeix una fila per cada correu del fil i indica quantes paraules té.',
+      colEmail: 'Correu',
+      colPalabras: 'Paraules',
+      btnAddEmail: '+ Afegeix correu',
+      meterLbl: 'Cost total del fil',
+      statusSinCalcular: 'sense calcular',
+      meterSubSuffix: 'de mitjana per correu',
+      staleNoteText: 'Hi ha canvis sense calcular ⓘ',
+      btnCalcular: 'Calcula el cost',
+      footerText: 'v0 — cost/hora = brut/any × (1 + càrregues socials) ÷ (hores setmanals × 52). Cost correu = (paraules ÷ velocitat lectura) × (Σ €/h a Per a + Σ €/h a CC × atenció CC).',
+      delPerfilTitle: 'Elimina el perfil',
+      newPerfilName: 'Nou perfil',
+      optPersonalizado: 'Personalitzat…',
+      placeholderNombre: 'Nom',
+      placeholderBrutoAnual: 'Brut anual',
+      unitEurAnyo: '€/any',
+      optSelectPerfil: '— selecciona perfil —',
+      optPara: 'Per a',
+      optCC: 'CC',
+      delParticipanteTitle: 'Elimina el participant',
+      personaSing: 'persona',
+      personaPlur: 'persones',
+      emailWord: 'Correu',
+      unitPalabras: 'paraules',
+      delEmailTitle: 'Elimina el correu',
+      emailSing: 'correu',
+      emailPlur: 'correus',
+      statusPendiente: 'pendent de calcular',
+      statusCalculado: 'calculat',
+      bdParaLabel: 'Cost a Per a',
+      bdCCLabel: 'Cost a CC',
+      importPasteFirst: 'Enganxa primer el contingut del fil de correus.',
+      importResultBase: 'Detectats {n} participants i {m} correus. S\u2019han substituït les dades d\u2019exemple.',
+      importResultPending: ' Assigna un perfil a les {p} files marcades en ambre a «Participants del fil».'
+    }
+  };
+
+  let currentLang = 'es';
+  const t = key => (I18N[currentLang] && I18N[currentLang][key]) || key;
+
+  function getLangFromURL(){
+    const p = new URLSearchParams(location.search).get('lang');
+    return (p === 'ca') ? 'ca' : 'es';
+  }
+
+  function applyStaticI18n(){
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      el.innerHTML = t(el.getAttribute('data-i18n-html'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+    });
+    const esBtn = $('btnLangEs'), caBtn = $('btnLangCa');
+    if (esBtn) esBtn.classList.toggle('active', currentLang === 'es');
+    if (caBtn) caBtn.classList.toggle('active', currentLang === 'ca');
+    document.querySelectorAll('a[href$=".html"]').forEach(a => {
+      const base = a.getAttribute('href').split('?')[0];
+      a.setAttribute('href', base + '?lang=' + currentLang);
+    });
+    document.documentElement.lang = currentLang;
+  }
+
+  function setLang(lang){
+    currentLang = lang;
+    history.replaceState(null, '', location.pathname + '?lang=' + lang);
+    applyStaticI18n();
+    renderPerfiles();
+    renderParticipantes();
+    renderEmails();
+    calcular();
+  }
+
+  const fmt = n => n.toLocaleString(currentLang === 'ca' ? 'ca-ES' : 'es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
   let uidCounter = 0;
   const uid = () => 'id' + (uidCounter++);
 
@@ -761,7 +978,7 @@
         <input type="text" value="${p.nombre}" data-role="nombre" data-id="${p.id}">
         <input type="number" class="input-importe" step="1" min="0" value="${p.bruto}" data-role="bruto" data-id="${p.id}">
         <span class="perfil-rate">${fmt(rateHora)} €</span>
-        <button class="row-del" data-role="del" data-id="${p.id}" title="Eliminar perfil">×</button>
+        <button class="row-del" data-role="del" data-id="${p.id}" title="${t('delPerfilTitle')}">×</button>
       `;
       cont.appendChild(row);
     });
@@ -784,7 +1001,7 @@
   }
 
   $('addPerfil').addEventListener('click', () => {
-    perfiles.push({ id: uid(), nombre: 'Nuevo perfil', bruto: 30000 });
+    perfiles.push({ id: uid(), nombre: t('newPerfilName'), bruto: 30000 });
     renderPerfiles(); renderParticipantes(); marcarPendiente();
   });
 
@@ -799,22 +1016,22 @@
       row.className = 'part-row' + (sinPerfil ? ' pending-profile' : '');
 
       let opciones = '';
-      if (sinPerfil) opciones += `<option value="" selected disabled>— selecciona perfil —</option>`;
+      if (sinPerfil) opciones += `<option value="" selected disabled>${t('optSelectPerfil')}</option>`;
       opciones += perfiles.map(pf => `<option value="${pf.id}" ${(!p.personalizado && p.perfilId===pf.id) ? 'selected' : ''}>${pf.nombre}</option>`).join('');
-      opciones += `<option value="personalizado" ${p.personalizado ? 'selected' : ''}>Personalizado…</option>`;
+      opciones += `<option value="personalizado" ${p.personalizado ? 'selected' : ''}>${t('optPersonalizado')}</option>`;
 
       row.innerHTML = `
-        <input type="text" placeholder="Nombre" value="${p.nombre}" data-role="nombre" data-id="${p.id}">
+        <input type="text" placeholder="${t('placeholderNombre')}" value="${p.nombre}" data-role="nombre" data-id="${p.id}">
         <select data-role="perfil" data-id="${p.id}">${opciones}</select>
         <select class="tipo-select" data-role="tipo" data-id="${p.id}">
-          <option value="para" ${p.tipo==='para' ? 'selected' : ''}>Para</option>
-          <option value="cc" ${p.tipo==='cc' ? 'selected' : ''}>CC</option>
+          <option value="para" ${p.tipo==='para' ? 'selected' : ''}>${t('optPara')}</option>
+          <option value="cc" ${p.tipo==='cc' ? 'selected' : ''}>${t('optCC')}</option>
         </select>
         <span class="perfil-rate">${sinPerfil ? '—' : fmt(rateHora) + ' €'}</span>
-        <button class="row-del" data-role="del" data-id="${p.id}" title="Eliminar participante">×</button>
+        <button class="row-del" data-role="del" data-id="${p.id}" title="${t('delParticipanteTitle')}">×</button>
         <div class="custom-bruto ${p.personalizado ? 'show' : ''}" data-id="${p.id}">
-          <input type="number" class="input-importe" step="1" min="0" value="${p.brutoPropio || ''}" placeholder="Bruto anual" data-role="brutoPropio" data-id="${p.id}">
-          <span>€/año</span>
+          <input type="number" class="input-importe" step="1" min="0" value="${p.brutoPropio || ''}" placeholder="${t('placeholderBrutoAnual')}" data-role="brutoPropio" data-id="${p.id}">
+          <span>${t('unitEurAnyo')}</span>
         </div>
       `;
       cont.appendChild(row);
@@ -849,7 +1066,7 @@
       renderParticipantes(); marcarPendiente();
     }));
 
-    $('totalParticipantes').textContent = participantes.length + (participantes.length === 1 ? ' persona' : ' personas');
+    $('totalParticipantes').textContent = participantes.length + ' ' + (participantes.length === 1 ? t('personaSing') : t('personaPlur'));
   }
 
   $('addParticipante').addEventListener('click', () => {
@@ -865,10 +1082,10 @@
       const row = document.createElement('div');
       row.className = 'email-row';
       row.innerHTML = `
-        <span class="email-label">Email ${idx + 1}</span>
+        <span class="email-label">${t('emailWord')} ${idx + 1}</span>
         <input type="number" min="0" value="${em.palabras}" data-role="palabras" data-id="${em.id}">
-        <span class="unit-tag">palabras</span>
-        <button class="row-del" data-role="del" data-id="${em.id}" title="Eliminar email">×</button>
+        <span class="unit-tag">${t('unitPalabras')}</span>
+        <button class="row-del" data-role="del" data-id="${em.id}" title="${t('delEmailTitle')}">×</button>
       `;
       cont.appendChild(row);
     });
@@ -883,7 +1100,7 @@
       renderEmails(); marcarPendiente();
     }));
 
-    $('totalEmails').textContent = emails.length + (emails.length === 1 ? ' email' : ' emails');
+    $('totalEmails').textContent = emails.length + ' ' + (emails.length === 1 ? t('emailSing') : t('emailPlur'));
   }
 
   $('addEmail').addEventListener('click', () => {
@@ -899,7 +1116,7 @@
   // ---------- ESTADO "PENDIENTE DE CALCULAR" ----------
   function marcarPendiente(){
     $('staleNote').classList.add('show');
-    $('statusLabel').textContent = 'pendiente de calcular';
+    $('statusLabel').textContent = t('statusPendiente');
     $('statusLabel').style.color = 'var(--accent-gold)';
   }
 
@@ -949,23 +1166,23 @@
     bd.innerHTML = '';
     const rowTO = document.createElement('div');
     rowTO.className = 'bd-row';
-    rowTO.innerHTML = `<span class="k">Coste en Para</span><span class="v">${fmt(totalTO)} €</span>`;
+    rowTO.innerHTML = `<span class="k">${t('bdParaLabel')}</span><span class="v">${fmt(totalTO)} €</span>`;
     bd.appendChild(rowTO);
     const rowCC = document.createElement('div');
     rowCC.className = 'bd-row alarm';
-    rowCC.innerHTML = `<span class="k">Coste en CC</span><span class="v">${fmt(totalCC)} €</span>`;
+    rowCC.innerHTML = `<span class="k">${t('bdCCLabel')}</span><span class="v">${fmt(totalCC)} €</span>`;
     bd.appendChild(rowCC);
 
     emails.forEach((em, idx) => {
       const row = document.createElement('div');
       row.className = 'bd-row';
-      row.innerHTML = `<span class="k">Email ${idx+1} (${em.palabras} palabras)</span><span class="v">${fmt(costesEmail[idx])} €</span>`;
+      row.innerHTML = `<span class="k">${t('emailWord')} ${idx+1} (${em.palabras} ${t('unitPalabras')})</span><span class="v">${fmt(costesEmail[idx])} €</span>`;
       bd.appendChild(row);
     });
 
     $('meterValue').textContent = fmt(total);
     $('costePorEmail').textContent = fmt(emails.length ? total / emails.length : 0) + ' €';
-    $('statusLabel').textContent = 'calculado';
+    $('statusLabel').textContent = t('statusCalculado');
     $('statusLabel').style.color = 'var(--ok)';
   }
 
@@ -974,8 +1191,8 @@
   // ---------- IMPORTAR HILO PEGADO ----------
   function parseHiloPegado(texto){
     const lineas = texto.replace(/\r\n/g, '\n').split('\n');
-    const reHeader = /^\s*(De|From|Para|To|CC|Cc|Asunto|Subject|Fecha|Date|Enviado|Sent)\s*:\s*(.*)$/i;
-    const reCorteBody = /^\s*(El .*(escribió|wrote).*:|On .*wrote:|-{3,}\s*(Original Message|Mensaje original)\s*-{3,}|>)/i;
+    const reHeader = /^\s*(De|From|Para|To|Per\s*a|A|CC|Cc|Asunto|Subject|Assumpte|Fecha|Date|Data|Enviado|Sent|Enviat)\s*:\s*(.*)$/i;
+    const reCorteBody = /^\s*(El .*(escribió|wrote|va escriure).*:|On .*wrote:|-{3,}\s*(Original Message|Mensaje original|Missatge original)\s*-{3,}|>)/i;
 
     // 1) localizar el inicio de cada mensaje por su cabecera De:/From:
     const inicios = [];
@@ -996,12 +1213,12 @@
         segLineas.forEach(linea => {
           const m = enCabecera ? linea.match(reHeader) : null;
           if (m){
-            const campo = m[1].toLowerCase();
+            const campo = m[1].toLowerCase().replace(/\s+/g, ' ').trim();
             const valor = m[2].trim();
             if (campo === 'de' || campo === 'from') bloque.de = valor;
-            else if (campo === 'para' || campo === 'to') bloque.para = valor;
+            else if (campo === 'para' || campo === 'to' || campo === 'per a' || campo === 'a') bloque.para = valor;
             else if (campo === 'cc') bloque.cc = valor;
-            // asunto/fecha/enviado/subject/date se ignoran para el cálculo
+            // asunto/fecha/enviado/subject/date/assumpte/data/enviat se ignoran para el cálculo
           } else {
             if (linea.trim() !== '' || bloque.cuerpo.length > 0) enCabecera = false;
             if (!enCabecera) bloque.cuerpo.push(linea);
@@ -1065,7 +1282,7 @@
     const texto = $('pegaHilo').value;
     const resEl = $('importResult');
     if (!texto.trim()){
-      resEl.textContent = 'Pega primero el contenido del hilo de emails.';
+      resEl.textContent = t('importPasteFirst');
       resEl.className = 'import-result warn';
       return;
     }
@@ -1086,8 +1303,8 @@
 
     const pendientes = participantes.filter(p => !p.personalizado && !p.perfilId).length;
     resEl.className = 'import-result ok';
-    resEl.textContent = `Detectados ${detectados.length} participantes y ${emailsPalabras.length} emails. Se han sustituido los datos de ejemplo.`
-      + (pendientes ? ` Asigna un perfil a las ${pendientes} filas marcadas en ámbar en «Participantes del hilo».` : '');
+    resEl.textContent = t('importResultBase').replace('{n}', detectados.length).replace('{m}', emailsPalabras.length)
+      + (pendientes ? t('importResultPending').replace('{p}', pendientes) : '');
   });
 
   $('clearImport').addEventListener('click', () => {
@@ -1096,7 +1313,13 @@
     $('importResult').className = 'import-result';
   });
 
+  // ---------- SELECTOR DE IDIOMA ----------
+  $('btnLangEs').addEventListener('click', () => setLang('es'));
+  $('btnLangCa').addEventListener('click', () => setLang('ca'));
+
   // ---------- INICIO ----------
+  currentLang = getLangFromURL();
+  applyStaticI18n();
   renderPerfiles();
   renderParticipantes();
   renderEmails();
