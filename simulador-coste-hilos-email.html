@@ -577,7 +577,7 @@
     <!-- IMPORTAR HILO -->
     <div class="ledger-section">
       <div class="section-label">Importar cadena de emails</div>
-      <p class="section-help">Copia y pega aquí tu hilo de emails (con cabeceras «De/Para/CC» o «From/To/Cc»). Detectamos los participantes y los emails automáticamente; tú solo tendrás que asignarles un perfil.</p>
+      <p class="section-help">Copia y pega aquí tu hilo de emails (con cabeceras «De/Para/CC» o «From/To/Cc»). Al detectar, se sustituyen los participantes y emails actuales —incluidos los de ejemplo— por los del hilo pegado; luego solo tendrás que asignarles un perfil.</p>
       <textarea id="pegaHilo" placeholder="De: Ana García <ana@empresa.com>&#10;Para: Marc Soler <marc@empresa.com>&#10;CC: Laia Puig <laia@empresa.com>&#10;Asunto: Propuesta Q3&#10;&#10;Hola a todos, os adjunto la propuesta...&#10;&#10;El 3 de agosto, Marc Soler escribió:&#10;Gracias Ana, un par de comentarios..."></textarea>
       <div class="import-actions">
         <button class="calc-btn" id="importBtn" style="margin-bottom:0;">Detectar participantes y emails</button>
@@ -1033,16 +1033,9 @@
 
     const { participantes: detectados, emailsPalabras } = parseHiloPegado(texto);
 
-    let nuevos = 0, actualizados = 0;
-    detectados.forEach(d => {
-      const existente = participantes.find(p => p.nombre.trim().toLowerCase() === d.nombre.trim().toLowerCase());
-      if (existente){
-        if (existente.tipo === 'cc' && d.tipo === 'para'){ existente.tipo = 'para'; actualizados++; }
-      } else {
-        participantes.push({ id: uid(), nombre: d.nombre, perfilId: null, personalizado: false, brutoPropio: null, tipo: d.tipo });
-        nuevos++;
-      }
-    });
+    participantes = detectados.map(d => ({
+      id: uid(), nombre: d.nombre, perfilId: null, personalizado: false, brutoPropio: null, tipo: d.tipo
+    }));
 
     if (emailsPalabras.length){
       emails = emailsPalabras.map(p => ({ id: uid(), palabras: p }));
@@ -1054,7 +1047,7 @@
 
     const pendientes = participantes.filter(p => !p.personalizado && !p.perfilId).length;
     resEl.className = 'import-result ok';
-    resEl.textContent = `Detectados ${detectados.length} participantes (${nuevos} nuevos) y ${emailsPalabras.length} emails.`
+    resEl.textContent = `Detectados ${detectados.length} participantes y ${emailsPalabras.length} emails. Se han sustituido los datos de ejemplo.`
       + (pendientes ? ` Asigna un perfil a las ${pendientes} filas marcadas en ámbar en «Participantes del hilo».` : '');
   });
 
