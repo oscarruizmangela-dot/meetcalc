@@ -518,14 +518,14 @@
     <!-- MANTENIMIENTO DE PERFILES -->
     <div class="ledger-section">
       <div class="section-label">Mantenimiento de perfiles</div>
-      <p class="section-help">El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y las horas laborables al año.</p>
+      <p class="section-help">El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y la jornada semanal (52 semanas/año).</p>
 
       <div class="config-row">
         <div class="field">
-          <label>Horas laborables / año</label>
+          <label>Horas semanales</label>
           <div class="unit-wrap">
-            <input type="number" min="1" value="1750" id="horasAnuales">
-            <span class="unit-tag">h/año</span>
+            <input type="number" min="1" value="40" id="horasSemana">
+            <span class="unit-tag">h/semana</span>
           </div>
         </div>
         <div class="field">
@@ -628,7 +628,7 @@
 
 </div>
 
-<footer>v0.2 — coste/hora = bruto/año × (1 + cargas sociales) ÷ horas laborables/año. Coste total = Σ(coste/h de cada asistente) × (duración + retraso) + sala.</footer>
+<footer>v0.3 — coste/hora = bruto/año × (1 + cargas sociales) ÷ (horas semanales × 52). Coste total = Σ(coste/h de cada asistente) × (duración + retraso) + sala.</footer>
 
 <script>
   const $ = id => document.getElementById(id);
@@ -638,9 +638,9 @@
 
   // ---------- ESTADO ----------
   let perfiles = [
-    { id: uid(), nombre: 'Directivo', bruto: 65000 },
-    { id: uid(), nombre: 'Mando intermedio', bruto: 38000 },
-    { id: uid(), nombre: 'Personal base', bruto: 24000 },
+    { id: uid(), nombre: 'Directivo', bruto: 80000 },
+    { id: uid(), nombre: 'Mando intermedio', bruto: 40000 },
+    { id: uid(), nombre: 'Personal base', bruto: 25000 },
   ];
 
   let asistentes = [
@@ -656,7 +656,8 @@
 
   // ---------- CÁLCULO AUXILIAR ----------
   function costeHoraDesdeBruto(bruto){
-    const horas = Math.max(1, +$('horasAnuales').value || 1750);
+    const horasSemana = Math.max(1, +$('horasSemana').value || 40);
+    const horas = horasSemana * 52;
     const cargas = Math.max(0, +$('cargasPct').value || 0) / 100;
     return (bruto * (1 + cargas)) / horas;
   }
@@ -779,7 +780,7 @@
   }
 
   // ---------- INPUTS GLOBALES ----------
-  ['horasAnuales','cargasPct','duracion','retraso','costeSala'].forEach(id => {
+  ['horasSemana','cargasPct','duracion','retraso','costeSala'].forEach(id => {
     $(id).addEventListener('input', () => marcarPendiente());
   });
 
