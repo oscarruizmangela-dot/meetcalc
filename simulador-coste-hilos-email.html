@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El coste de un hilo de emails — Simulador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EEF0E2;
+    --paper-line: #CBD1B8;
+    --surface: #FBFAF3;
+    --ink: #22301F;
+    --ink-soft: #5B6555;
+    --accent-alarm: #A23E2A;
+    --accent-alarm-soft: #A23E2A22;
+    --accent-gold: #A9812E;
+    --accent-gold-soft: #A9812E1c;
+    --ok: #3D6B4A;
+    --radius: 4px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(180deg, transparent, transparent 27px, var(--paper-line) 28px),
+      var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    padding:0 0 80px 0;
+  }
+  a{color:inherit;}
+  button{font-family:'IBM Plex Sans', sans-serif;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    padding:52px 24px 34px;
+    max-width:1100px;
+    margin:0 auto;
+    border-bottom:2px solid var(--ink);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--accent-alarm);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent-alarm);
+    box-shadow:0 0 0 3px var(--accent-alarm-soft);
+  }
+  h1{
+    font-family:'IBM Plex Slab', serif;
+    font-weight:700;
+    font-size:clamp(34px, 5vw, 56px);
+    line-height:1.02;
+    margin:14px 0 12px;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    font-size:16px;
+    color:var(--ink-soft);
+    max-width:640px;
+    line-height:1.55;
+    margin:0;
+  }
+
+  /* ---------- BANNER OTRO SIMULADOR ---------- */
+  .sim-banner{
+    max-width:1100px;
+    margin:22px auto 0;
+    padding:0 24px;
+  }
+  .sim-banner a{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    text-decoration:none;
+    background:var(--surface);
+    border:1px solid var(--paper-line);
+    border-left:4px solid var(--accent-gold);
+    border-radius:var(--radius);
+    padding:16px 20px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .sim-banner a:hover{
+    border-left-color:var(--accent-alarm);
+    background:#fff;
+  }
+  .sim-banner .icon{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:20px;
+    color:var(--accent-gold);
+    flex-shrink:0;
+  }
+  .sim-banner .txt{flex:1;}
+  .sim-banner .txt .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent-gold);
+    display:block;
+    margin-bottom:3px;
+  }
+  .sim-banner .txt .title{
+    font-family:'IBM Plex Slab', serif;
+    font-weight:600;
+    font-size:17px;
+    color:var(--ink);
+  }
+  .sim-banner .txt .desc{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .sim-banner .arrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:18px;
+    color:var(--ink-soft);
+    flex-shrink:0;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{
+    max-width:1100px;
+    margin:0 auto;
+    padding:40px 24px 0;
+    display:grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width: 860px){
+    .wrap{grid-template-columns:1fr;}
+  }
+
+  /* ---------- LEDGER (form) ---------- */
+  .ledger{
+    background:var(--surface);
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:6px 0;
+  }
+  .ledger-section{
+    padding:22px 26px;
+    border-bottom:1px solid var(--paper-line);
+  }
+  .ledger-section:last-child{border-bottom:none;}
+  .section-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent-gold);
+    margin:0 0 6px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .section-label span.n{color:var(--ink-soft); text-transform:none; letter-spacing:0;}
+  .section-help{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0 0 16px;
+    line-height:1.5;
+  }
+
+  .config-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:18px;
+    padding-bottom:18px;
+    border-bottom:1px dashed var(--paper-line);
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .field label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .unit-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .unit-wrap input[type=number]{flex:1;}
+  .unit-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    padding:8px 10px;
+    border-radius:3px;
+  }
+
+  input[type=number], input[type=text]{
+    width:100%;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    font-weight:600;
+    padding:8px 9px;
+    border:1px solid var(--paper-line);
+    border-radius:3px;
+    background:#fff;
+    color:var(--ink);
+  }
+  input[type=number]{text-align:right;}
+  input[type=text]{font-family:'IBM Plex Sans'; font-weight:500; text-align:left;}
+
+  input.input-importe::-webkit-outer-spin-button,
+  input.input-importe::-webkit-inner-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+  }
+  input.input-importe{
+    -moz-appearance:textfield;
+    appearance:textfield;
+  }
+
+  select{
+    width:100%;
+    font-family:'IBM Plex Sans';
+    font-size:13.5px;
+    font-weight:500;
+    padding:8px 9px;
+    border:1px solid var(--paper-line);
+    border-radius:3px;
+    background:#fff;
+    color:var(--ink);
+  }
+  input:focus, select:focus{outline:2px solid var(--accent-gold); outline-offset:1px;}
+
+  /* perfil rows */
+  .perfil-row{
+    display:grid;
+    grid-template-columns: 1fr 110px 90px 26px;
+    gap:8px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .perfil-rate{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ok);
+    text-align:right;
+    white-space:nowrap;
+  }
+  .row-del{
+    width:26px; height:26px;
+    border:1px solid var(--paper-line);
+    background:#fff;
+    border-radius:3px;
+    color:var(--accent-alarm);
+    cursor:pointer;
+    font-size:14px;
+    line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .row-del:hover{background:var(--accent-alarm-soft);}
+  .col-headers{
+    display:grid;
+    grid-template-columns: 1fr 110px 90px 26px;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .col-headers span:nth-child(2), .col-headers span:nth-child(3){text-align:right;}
+
+  /* participante rows */
+  .part-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr 78px 80px 26px;
+    gap:8px;
+    align-items:center;
+    margin-bottom:10px;
+    padding:4px 6px;
+    border-radius:3px;
+    border-left:3px solid transparent;
+  }
+  .part-row.pending-profile{
+    border-left-color:var(--accent-gold);
+    background:var(--accent-gold-soft);
+  }
+  .part-row .custom-bruto{
+    grid-column: 1 / 3;
+    display:none;
+    gap:8px;
+    align-items:center;
+  }
+  .part-row .custom-bruto.show{display:flex;}
+  .part-row .custom-bruto input{flex:1;}
+  .part-row .custom-bruto span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .part-col-headers{
+    display:grid;
+    grid-template-columns: 1fr 1fr 78px 80px 26px;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .part-col-headers span:nth-child(4){text-align:right;}
+
+  .tipo-select{
+    padding:8px 6px;
+    font-size:12.5px;
+    text-align:center;
+  }
+
+  /* email rows */
+  .email-row{
+    display:grid;
+    grid-template-columns: 90px 1fr 70px 26px;
+    gap:8px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .email-row .email-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .email-col-headers{
+    display:grid;
+    grid-template-columns: 90px 1fr 70px 26px;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .email-col-headers span:nth-child(3){text-align:right;}
+
+  .add-btn{
+    width:100%;
+    margin-top:4px;
+    padding:9px;
+    border:1px dashed var(--paper-line);
+    background:transparent;
+    border-radius:3px;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+  }
+  .add-btn:hover{border-color:var(--accent-gold); color:var(--accent-gold);}
+
+  /* importar hilo */
+  #pegaHilo{
+    width:100%;
+    min-height:140px;
+    resize:vertical;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    font-weight:500;
+    line-height:1.5;
+    padding:12px;
+    border:1px solid var(--paper-line);
+    border-radius:3px;
+    background:#fff;
+    color:var(--ink);
+    margin-bottom:12px;
+  }
+  #pegaHilo:focus{outline:2px solid var(--accent-gold); outline-offset:1px;}
+  .import-actions{
+    display:flex;
+    gap:10px;
+  }
+  .import-actions .calc-btn{flex:1;}
+  .import-result{
+    margin-top:12px;
+    font-size:12.5px;
+    line-height:1.6;
+    color:var(--ink-soft);
+  }
+  .import-result.ok{color:var(--ok);}
+  .import-result.warn{color:var(--accent-alarm);}
+
+  .field-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+
+  /* ---------- METER (sticky right panel) ---------- */
+  .meter-panel{
+    position:sticky;
+    top:24px;
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--ink);
+  }
+  .meter-head{
+    padding:20px 24px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .meter-head .lbl{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#C7CDB7;
+  }
+  .meter-head .status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--accent-gold);
+  }
+  .meter-display{
+    padding:14px 24px 6px;
+    text-align:left;
+  }
+  .meter-number{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:700;
+    font-size:clamp(40px, 6vw, 58px);
+    letter-spacing:-0.01em;
+    line-height:1;
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+  }
+  .meter-number .sym{font-size:0.5em; color:var(--accent-gold); font-weight:600;}
+  .meter-sub{
+    font-size:12.5px;
+    color:#C7CDB7;
+    margin-top:8px;
+  }
+  .meter-sub b{color:var(--paper); font-weight:600;}
+
+  .rule{
+    height:1px;
+    background:#3A4736;
+    margin:18px 24px 0;
+  }
+
+  .breakdown{
+    padding:18px 24px 4px;
+    max-height:320px;
+    overflow-y:auto;
+  }
+  .bd-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:13.5px;
+    padding:8px 0;
+    border-bottom:1px dashed #3A4736;
+  }
+  .bd-row.alarm{color:var(--accent-alarm);}
+  .bd-row .k{color:#C7CDB7;}
+  .bd-row .v{font-family:'IBM Plex Mono', monospace; font-weight:600; color:var(--paper);}
+  .bd-row.alarm .v{color:var(--accent-alarm);}
+
+  .meter-cta{
+    padding:20px 24px 24px;
+  }
+  .calc-btn{
+    width:100%;
+    padding:14px;
+    background:var(--accent-gold);
+    color:var(--ink);
+    border:none;
+    border-radius:3px;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:filter .15s ease;
+  }
+  .calc-btn:hover{filter:brightness(1.08);}
+  .stale-note{
+    font-size:11.5px;
+    color:var(--accent-gold);
+    text-align:center;
+    margin:0 0 10px;
+    display:none;
+  }
+  .stale-note.show{display:block;}
+
+  footer{
+    max-width:1100px;
+    margin:40px auto 0;
+    padding:0 24px;
+    font-size:12px;
+    color:var(--ink-soft);
+    font-family:'IBM Plex Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Simulador · v0</div>
+  <h1>¿Cuánto cuesta<br>este hilo de emails?</h1>
+  <p>Define quién está en el hilo (Para / CC) y cuántas palabras tiene cada email. Cuando lo tengas listo, pulsa «Calcular coste» para ver el resultado.</p>
+</header>
+
+<div class="sim-banner">
+  <a href="simulador-coste-reuniones.html">
+    <span class="icon">◷</span>
+    <span class="txt">
+      <span class="tag">Otro simulador</span>
+      <span class="title">¿Cuánto cuesta esta reunión?</span>
+      <span class="desc">Asistentes, duración y retraso — el mismo cálculo, aplicado a las reuniones.</span>
+    </span>
+    <span class="arrow">→</span>
+  </a>
+</div>
+
+<div class="wrap">
+
+  <!-- LEDGER / FORM -->
+  <div class="ledger">
+
+    <!-- MANTENIMIENTO DE PERFILES -->
+    <div class="ledger-section">
+      <div class="section-label">Mantenimiento de perfiles</div>
+      <p class="section-help">El coste/hora se calcula automáticamente a partir del bruto anual, las cargas sociales y las horas laborables al año.</p>
+
+      <div class="config-row">
+        <div class="field">
+          <label>Horas laborables / año</label>
+          <div class="unit-wrap">
+            <input type="number" min="1" value="1750" id="horasAnuales">
+            <span class="unit-tag">h/año</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Cargas sociales (sobre bruto)</label>
+          <div class="unit-wrap">
+            <input type="number" min="0" value="32" id="cargasPct">
+            <span class="unit-tag">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-headers">
+        <span>Perfil</span>
+        <span>Bruto/año</span>
+        <span>€/h</span>
+        <span></span>
+      </div>
+      <div id="perfilesList"></div>
+      <button class="add-btn" id="addPerfil">+ Añadir perfil</button>
+    </div>
+
+    <!-- IMPORTAR HILO -->
+    <div class="ledger-section">
+      <div class="section-label">Importar cadena de emails</div>
+      <p class="section-help">Copia y pega aquí tu hilo de emails (con cabeceras «De/Para/CC» o «From/To/Cc»). Detectamos los participantes y los emails automáticamente; tú solo tendrás que asignarles un perfil.</p>
+      <textarea id="pegaHilo" placeholder="De: Ana García <ana@empresa.com>&#10;Para: Marc Soler <marc@empresa.com>&#10;CC: Laia Puig <laia@empresa.com>&#10;Asunto: Propuesta Q3&#10;&#10;Hola a todos, os adjunto la propuesta...&#10;&#10;El 3 de agosto, Marc Soler escribió:&#10;Gracias Ana, un par de comentarios..."></textarea>
+      <div class="import-actions">
+        <button class="calc-btn" id="importBtn" style="margin-bottom:0;">Detectar participantes y emails</button>
+        <button class="add-btn" id="clearImport" style="width:auto; padding:11px 16px;">Limpiar</button>
+      </div>
+      <div class="import-result" id="importResult"></div>
+    </div>
+
+    <!-- PARTICIPANTES DEL HILO -->
+    <div class="ledger-section">
+      <div class="section-label">Participantes del hilo <span class="n" id="totalParticipantes">0 personas</span></div>
+      <p class="section-help">Cada persona cuenta durante todo el hilo. En CC se aplica un factor de atención reducido (lo defines más abajo). Las filas en ámbar necesitan que les asignes un perfil.</p>
+
+      <div class="part-col-headers">
+        <span>Nombre</span>
+        <span>Perfil</span>
+        <span>Para/CC</span>
+        <span>€/h</span>
+        <span></span>
+      </div>
+      <div id="participantesList"></div>
+      <button class="add-btn" id="addParticipante">+ Añadir participante</button>
+    </div>
+
+    <!-- LECTURA -->
+    <div class="ledger-section">
+      <div class="section-label">Parámetros de lectura</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Velocidad de lectura</label>
+          <div class="unit-wrap">
+            <input type="number" min="1" value="200" id="velocidadLectura">
+            <span class="unit-tag">palabras/min</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Atención en CC</label>
+          <div class="unit-wrap">
+            <input type="number" min="0" max="100" value="40" id="factorCC">
+            <span class="unit-tag">%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMAILS DEL HILO -->
+    <div class="ledger-section">
+      <div class="section-label">Emails del hilo <span class="n" id="totalEmails">0 emails</span></div>
+      <p class="section-help">Añade una fila por cada email del hilo e indica cuántas palabras tiene.</p>
+
+      <div class="email-col-headers">
+        <span>Email</span>
+        <span>Palabras</span>
+        <span></span>
+      </div>
+      <div id="emailsList"></div>
+      <button class="add-btn" id="addEmail">+ Añadir email</button>
+    </div>
+
+  </div>
+
+  <!-- METER -->
+  <div class="meter-panel">
+    <div class="meter-head">
+      <span class="lbl">Coste total del hilo</span>
+      <span class="status" id="statusLabel">sin calcular</span>
+    </div>
+    <div class="meter-display">
+      <div class="meter-number"><span class="sym">€</span><span id="meterValue">0,00</span></div>
+      <div class="meter-sub"><b id="costePorEmail">0,00 €</b> de media por email</div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="breakdown" id="breakdownList">
+      <!-- filas generadas dinámicamente -->
+    </div>
+
+    <div class="meter-cta">
+      <div class="stale-note" id="staleNote">Hay cambios sin calcular ⓘ</div>
+      <button class="calc-btn" id="calcBtn">Calcular coste</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>v0 — coste/hora = bruto/año × (1 + cargas sociales) ÷ horas laborables/año. Coste email = (palabras ÷ velocidad lectura) × (Σ €/h en Para + Σ €/h en CC × atención CC).</footer>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const fmt = n => n.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
+  let uidCounter = 0;
+  const uid = () => 'id' + (uidCounter++);
+
+  // ---------- ESTADO ----------
+  let perfiles = [
+    { id: uid(), nombre: 'Directivo', bruto: 65000 },
+    { id: uid(), nombre: 'Mando intermedio', bruto: 38000 },
+    { id: uid(), nombre: 'Personal base', bruto: 24000 },
+  ];
+
+  let participantes = [
+    { id: uid(), nombre: 'Ana (dirección)', perfilId: perfiles[0].id, personalizado: false, brutoPropio: null, tipo: 'para' },
+    { id: uid(), nombre: 'Marc',            perfilId: perfiles[1].id, personalizado: false, brutoPropio: null, tipo: 'para' },
+    { id: uid(), nombre: 'Laia',            perfilId: perfiles[1].id, personalizado: false, brutoPropio: null, tipo: 'cc' },
+    { id: uid(), nombre: 'Jordi',           perfilId: perfiles[2].id, personalizado: false, brutoPropio: null, tipo: 'para' },
+    { id: uid(), nombre: 'Núria',           perfilId: perfiles[2].id, personalizado: false, brutoPropio: null, tipo: 'cc' },
+  ];
+
+  let emails = [
+    { id: uid(), palabras: 120 },
+    { id: uid(), palabras: 80 },
+    { id: uid(), palabras: 210 },
+  ];
+
+  let ultimoTotal = 0;
+
+  // ---------- CÁLCULO AUXILIAR ----------
+  function costeHoraDesdeBruto(bruto){
+    const horas = Math.max(1, +$('horasAnuales').value || 1750);
+    const cargas = Math.max(0, +$('cargasPct').value || 0) / 100;
+    return (bruto * (1 + cargas)) / horas;
+  }
+
+  function costeHoraParticipante(p){
+    if (p.personalizado){
+      return costeHoraDesdeBruto(p.brutoPropio || 0);
+    }
+    const perfil = perfiles.find(x => x.id === p.perfilId);
+    return perfil ? costeHoraDesdeBruto(perfil.bruto) : 0;
+  }
+
+  // ---------- RENDER: PERFILES ----------
+  function renderPerfiles(){
+    const cont = $('perfilesList');
+    cont.innerHTML = '';
+    perfiles.forEach(p => {
+      const rateHora = costeHoraDesdeBruto(p.bruto);
+      const row = document.createElement('div');
+      row.className = 'perfil-row';
+      row.innerHTML = `
+        <input type="text" value="${p.nombre}" data-role="nombre" data-id="${p.id}">
+        <input type="number" class="input-importe" step="1" min="0" value="${p.bruto}" data-role="bruto" data-id="${p.id}">
+        <span class="perfil-rate">${fmt(rateHora)} €</span>
+        <button class="row-del" data-role="del" data-id="${p.id}" title="Eliminar perfil">×</button>
+      `;
+      cont.appendChild(row);
+    });
+
+    cont.querySelectorAll('[data-role="nombre"]').forEach(el => el.addEventListener('input', e => {
+      const p = perfiles.find(x => x.id === e.target.dataset.id);
+      if (p) { p.nombre = e.target.value; marcarPendiente(); }
+    }));
+    cont.querySelectorAll('[data-role="bruto"]').forEach(el => el.addEventListener('input', e => {
+      const p = perfiles.find(x => x.id === e.target.dataset.id);
+      if (p) { p.bruto = Math.round(+e.target.value || 0); marcarPendiente(); }
+    }));
+    cont.querySelectorAll('[data-role="del"]').forEach(el => el.addEventListener('click', e => {
+      if (perfiles.length <= 1) return;
+      const id = e.target.dataset.id;
+      perfiles = perfiles.filter(p => p.id !== id);
+      participantes.forEach(p => { if (p.perfilId === id) p.perfilId = perfiles[0].id; });
+      renderPerfiles(); renderParticipantes(); marcarPendiente();
+    }));
+  }
+
+  $('addPerfil').addEventListener('click', () => {
+    perfiles.push({ id: uid(), nombre: 'Nuevo perfil', bruto: 30000 });
+    renderPerfiles(); renderParticipantes(); marcarPendiente();
+  });
+
+  // ---------- RENDER: PARTICIPANTES ----------
+  function renderParticipantes(){
+    const cont = $('participantesList');
+    cont.innerHTML = '';
+    participantes.forEach(p => {
+      const rateHora = costeHoraParticipante(p);
+      const sinPerfil = !p.personalizado && !p.perfilId;
+      const row = document.createElement('div');
+      row.className = 'part-row' + (sinPerfil ? ' pending-profile' : '');
+
+      let opciones = '';
+      if (sinPerfil) opciones += `<option value="" selected disabled>— selecciona perfil —</option>`;
+      opciones += perfiles.map(pf => `<option value="${pf.id}" ${(!p.personalizado && p.perfilId===pf.id) ? 'selected' : ''}>${pf.nombre}</option>`).join('');
+      opciones += `<option value="personalizado" ${p.personalizado ? 'selected' : ''}>Personalizado…</option>`;
+
+      row.innerHTML = `
+        <input type="text" placeholder="Nombre" value="${p.nombre}" data-role="nombre" data-id="${p.id}">
+        <select data-role="perfil" data-id="${p.id}">${opciones}</select>
+        <select class="tipo-select" data-role="tipo" data-id="${p.id}">
+          <option value="para" ${p.tipo==='para' ? 'selected' : ''}>Para</option>
+          <option value="cc" ${p.tipo==='cc' ? 'selected' : ''}>CC</option>
+        </select>
+        <span class="perfil-rate">${sinPerfil ? '—' : fmt(rateHora) + ' €'}</span>
+        <button class="row-del" data-role="del" data-id="${p.id}" title="Eliminar participante">×</button>
+        <div class="custom-bruto ${p.personalizado ? 'show' : ''}" data-id="${p.id}">
+          <input type="number" class="input-importe" step="1" min="0" value="${p.brutoPropio || ''}" placeholder="Bruto anual" data-role="brutoPropio" data-id="${p.id}">
+          <span>€/año</span>
+        </div>
+      `;
+      cont.appendChild(row);
+    });
+
+    cont.querySelectorAll('[data-role="nombre"]').forEach(el => el.addEventListener('input', e => {
+      const p = participantes.find(x => x.id === e.target.dataset.id);
+      if (p) { p.nombre = e.target.value; marcarPendiente(); }
+    }));
+    cont.querySelectorAll('[data-role="perfil"]').forEach(el => el.addEventListener('change', e => {
+      const p = participantes.find(x => x.id === e.target.dataset.id);
+      if (!p) return;
+      if (e.target.value === 'personalizado'){
+        p.personalizado = true;
+      } else {
+        p.personalizado = false;
+        p.perfilId = e.target.value;
+      }
+      renderParticipantes(); marcarPendiente();
+    }));
+    cont.querySelectorAll('[data-role="tipo"]').forEach(el => el.addEventListener('change', e => {
+      const p = participantes.find(x => x.id === e.target.dataset.id);
+      if (p) { p.tipo = e.target.value; marcarPendiente(); }
+    }));
+    cont.querySelectorAll('[data-role="brutoPropio"]').forEach(el => el.addEventListener('input', e => {
+      const p = participantes.find(x => x.id === e.target.dataset.id);
+      if (p) { p.brutoPropio = Math.round(+e.target.value || 0); marcarPendiente(); }
+    }));
+    cont.querySelectorAll('[data-role="del"]').forEach(el => el.addEventListener('click', e => {
+      const id = e.target.dataset.id;
+      participantes = participantes.filter(p => p.id !== id);
+      renderParticipantes(); marcarPendiente();
+    }));
+
+    $('totalParticipantes').textContent = participantes.length + (participantes.length === 1 ? ' persona' : ' personas');
+  }
+
+  $('addParticipante').addEventListener('click', () => {
+    participantes.push({ id: uid(), nombre: '', perfilId: perfiles[0].id, personalizado: false, brutoPropio: null, tipo: 'para' });
+    renderParticipantes(); marcarPendiente();
+  });
+
+  // ---------- RENDER: EMAILS ----------
+  function renderEmails(){
+    const cont = $('emailsList');
+    cont.innerHTML = '';
+    emails.forEach((em, idx) => {
+      const row = document.createElement('div');
+      row.className = 'email-row';
+      row.innerHTML = `
+        <span class="email-label">Email ${idx + 1}</span>
+        <input type="number" min="0" value="${em.palabras}" data-role="palabras" data-id="${em.id}">
+        <span class="unit-tag">palabras</span>
+        <button class="row-del" data-role="del" data-id="${em.id}" title="Eliminar email">×</button>
+      `;
+      cont.appendChild(row);
+    });
+    cont.querySelectorAll('[data-role="palabras"]').forEach(el => el.addEventListener('input', e => {
+      const em = emails.find(x => x.id === e.target.dataset.id);
+      if (em) { em.palabras = Math.max(0, Math.round(+e.target.value || 0)); marcarPendiente(); }
+    }));
+    cont.querySelectorAll('[data-role="del"]').forEach(el => el.addEventListener('click', e => {
+      if (emails.length <= 1) return;
+      const id = e.target.dataset.id;
+      emails = emails.filter(em => em.id !== id);
+      renderEmails(); marcarPendiente();
+    }));
+
+    $('totalEmails').textContent = emails.length + (emails.length === 1 ? ' email' : ' emails');
+  }
+
+  $('addEmail').addEventListener('click', () => {
+    emails.push({ id: uid(), palabras: 100 });
+    renderEmails(); marcarPendiente();
+  });
+
+  // ---------- INPUTS GLOBALES ----------
+  ['horasAnuales','cargasPct','velocidadLectura','factorCC'].forEach(id => {
+    $(id).addEventListener('input', () => marcarPendiente());
+  });
+
+  // ---------- ESTADO "PENDIENTE DE CALCULAR" ----------
+  function marcarPendiente(){
+    $('staleNote').classList.add('show');
+    $('statusLabel').textContent = 'pendiente de calcular';
+    $('statusLabel').style.color = 'var(--accent-gold)';
+  }
+
+  // ---------- CÁLCULO PRINCIPAL ----------
+  function calcular(){
+    // refresca las tarifas €/h mostradas en perfiles y participantes
+    perfiles.forEach(p => {
+      const el = document.querySelector(`[data-role="bruto"][data-id="${p.id}"]`);
+      if (el){
+        const span = el.closest('.perfil-row').querySelector('.perfil-rate');
+        if (span) span.textContent = fmt(costeHoraDesdeBruto(p.bruto)) + ' €';
+      }
+    });
+    participantes.forEach(p => {
+      const row = document.querySelector(`.part-row [data-id="${p.id}"]`)?.closest('.part-row');
+      if (row){
+        const span = row.querySelector('.perfil-rate');
+        const sinPerfil = !p.personalizado && !p.perfilId;
+        if (span) span.textContent = sinPerfil ? '—' : fmt(costeHoraParticipante(p)) + ' €';
+      }
+    });
+
+    $('staleNote').classList.remove('show');
+
+    const velocidad = Math.max(1, +$('velocidadLectura').value || 200);
+    const factorCC = Math.max(0, Math.min(100, +$('factorCC').value || 0)) / 100;
+
+    const rateTOxMin = participantes.filter(p => p.tipo === 'para').reduce((s,p) => s + costeHoraParticipante(p), 0) / 60;
+    const rateCCxMin = participantes.filter(p => p.tipo === 'cc').reduce((s,p) => s + costeHoraParticipante(p), 0) / 60 * factorCC;
+    const rateCombinadaxMin = rateTOxMin + rateCCxMin;
+
+    let total = 0;
+    let totalTO = 0, totalCC = 0;
+    const costesEmail = emails.map(em => {
+      const minLectura = em.palabras / velocidad;
+      const cTO = rateTOxMin * minLectura;
+      const cCC = rateCCxMin * minLectura;
+      totalTO += cTO; totalCC += cCC;
+      const c = cTO + cCC;
+      total += c;
+      return c;
+    });
+    ultimoTotal = total;
+
+    // pintar desglose
+    const bd = $('breakdownList');
+    bd.innerHTML = '';
+    const rowTO = document.createElement('div');
+    rowTO.className = 'bd-row';
+    rowTO.innerHTML = `<span class="k">Coste en Para</span><span class="v">${fmt(totalTO)} €</span>`;
+    bd.appendChild(rowTO);
+    const rowCC = document.createElement('div');
+    rowCC.className = 'bd-row alarm';
+    rowCC.innerHTML = `<span class="k">Coste en CC</span><span class="v">${fmt(totalCC)} €</span>`;
+    bd.appendChild(rowCC);
+
+    emails.forEach((em, idx) => {
+      const row = document.createElement('div');
+      row.className = 'bd-row';
+      row.innerHTML = `<span class="k">Email ${idx+1} (${em.palabras} palabras)</span><span class="v">${fmt(costesEmail[idx])} €</span>`;
+      bd.appendChild(row);
+    });
+
+    $('meterValue').textContent = fmt(total);
+    $('costePorEmail').textContent = fmt(emails.length ? total / emails.length : 0) + ' €';
+    $('statusLabel').textContent = 'calculado';
+    $('statusLabel').style.color = 'var(--ok)';
+  }
+
+  $('calcBtn').addEventListener('click', calcular);
+
+  // ---------- IMPORTAR HILO PEGADO ----------
+  function parseHiloPegado(texto){
+    const lineas = texto.replace(/\r\n/g, '\n').split('\n');
+    const reHeader = /^\s*(De|From|Para|To|CC|Cc|Asunto|Subject|Fecha|Date|Enviado|Sent)\s*:\s*(.*)$/i;
+    const reCorteBody = /^\s*(El .*(escribió|wrote).*:|On .*wrote:|-{3,}\s*(Original Message|Mensaje original)\s*-{3,}|>)/i;
+
+    // 1) localizar el inicio de cada mensaje por su cabecera De:/From:
+    const inicios = [];
+    lineas.forEach((linea, idx) => {
+      if (/^\s*(De|From)\s*:/i.test(linea)) inicios.push(idx);
+    });
+
+    const bloques = [];
+    if (inicios.length === 0){
+      // sin cabeceras reconocibles: se trata como un único email de texto libre
+      bloques.push({ de: '', para: '', cc: '', cuerpo: lineas });
+    } else {
+      inicios.forEach((inicio, i) => {
+        const fin = (i + 1 < inicios.length) ? inicios[i + 1] : lineas.length;
+        const segLineas = lineas.slice(inicio, fin);
+        const bloque = { de: '', para: '', cc: '', cuerpo: [] };
+        let enCabecera = true;
+        segLineas.forEach(linea => {
+          const m = enCabecera ? linea.match(reHeader) : null;
+          if (m){
+            const campo = m[1].toLowerCase();
+            const valor = m[2].trim();
+            if (campo === 'de' || campo === 'from') bloque.de = valor;
+            else if (campo === 'para' || campo === 'to') bloque.para = valor;
+            else if (campo === 'cc') bloque.cc = valor;
+            // asunto/fecha/enviado/subject/date se ignoran para el cálculo
+          } else {
+            if (linea.trim() !== '' || bloque.cuerpo.length > 0) enCabecera = false;
+            if (!enCabecera) bloque.cuerpo.push(linea);
+          }
+        });
+        bloques.push(bloque);
+      });
+    }
+
+    // 2) extraer participantes de cada bloque
+    function extraerPersonas(campo){
+      if (!campo) return [];
+      return campo.split(/[,;]/).map(s => s.trim()).filter(Boolean).map(entry => {
+        const m = entry.match(/^(.*?)<([^>]+)>$/);
+        if (m){
+          const nombre = m[1].trim().replace(/^"|"$/g, '') || m[2].split('@')[0];
+          return nombre;
+        }
+        if (entry.includes('@')){
+          return entry.split('@')[0].replace(/[._]/g, ' ');
+        }
+        return entry;
+      });
+    }
+
+    const mapaParticipantes = new Map(); // nombre en minúsculas -> {nombre, tipo}
+    const emailsDetectados = [];
+
+    bloques.forEach(bloque => {
+      extraerPersonas(bloque.de).forEach(nombre => {
+        const key = nombre.toLowerCase();
+        mapaParticipantes.set(key, { nombre, tipo: 'para' });
+      });
+      extraerPersonas(bloque.para).forEach(nombre => {
+        const key = nombre.toLowerCase();
+        mapaParticipantes.set(key, { nombre, tipo: 'para' });
+      });
+      extraerPersonas(bloque.cc).forEach(nombre => {
+        const key = nombre.toLowerCase();
+        if (!mapaParticipantes.has(key)) mapaParticipantes.set(key, { nombre, tipo: 'cc' });
+      });
+
+      // cuerpo: quitar líneas citadas / de corte, y contar palabras
+      const cuerpoLimpio = [];
+      for (const linea of bloque.cuerpo){
+        if (reCorteBody.test(linea)) break;
+        cuerpoLimpio.push(linea);
+      }
+      const texto = cuerpoLimpio.join(' ').trim();
+      const palabras = texto.length ? texto.split(/\s+/).filter(Boolean).length : 0;
+      emailsDetectados.push(palabras);
+    });
+
+    return {
+      participantes: Array.from(mapaParticipantes.values()),
+      emailsPalabras: emailsDetectados.filter((p, i) => !(bloques.length > 1 && p === 0)) // descarta bloques vacíos si hay varios
+    };
+  }
+
+  $('importBtn').addEventListener('click', () => {
+    const texto = $('pegaHilo').value;
+    const resEl = $('importResult');
+    if (!texto.trim()){
+      resEl.textContent = 'Pega primero el contenido del hilo de emails.';
+      resEl.className = 'import-result warn';
+      return;
+    }
+
+    const { participantes: detectados, emailsPalabras } = parseHiloPegado(texto);
+
+    let nuevos = 0, actualizados = 0;
+    detectados.forEach(d => {
+      const existente = participantes.find(p => p.nombre.trim().toLowerCase() === d.nombre.trim().toLowerCase());
+      if (existente){
+        if (existente.tipo === 'cc' && d.tipo === 'para'){ existente.tipo = 'para'; actualizados++; }
+      } else {
+        participantes.push({ id: uid(), nombre: d.nombre, perfilId: null, personalizado: false, brutoPropio: null, tipo: d.tipo });
+        nuevos++;
+      }
+    });
+
+    if (emailsPalabras.length){
+      emails = emailsPalabras.map(p => ({ id: uid(), palabras: p }));
+    }
+
+    renderParticipantes();
+    renderEmails();
+    marcarPendiente();
+
+    const pendientes = participantes.filter(p => !p.personalizado && !p.perfilId).length;
+    resEl.className = 'import-result ok';
+    resEl.textContent = `Detectados ${detectados.length} participantes (${nuevos} nuevos) y ${emailsPalabras.length} emails.`
+      + (pendientes ? ` Asigna un perfil a las ${pendientes} filas marcadas en ámbar en «Participantes del hilo».` : '');
+  });
+
+  $('clearImport').addEventListener('click', () => {
+    $('pegaHilo').value = '';
+    $('importResult').textContent = '';
+    $('importResult').className = 'import-result';
+  });
+
+  // ---------- INICIO ----------
+  renderPerfiles();
+  renderParticipantes();
+  renderEmails();
+  calcular();
+</script>
+
+</body>
+</html>
